@@ -20,66 +20,54 @@ from jev_billing_tokenizer import JevBillingTokenizer
 OPENROUTER_URL = "https://openrouter.ai/api/alpha/decisions"
 USER_AGENT = "JevTokenizerAnalysis/0.1 (https://github.com/sqwishai/jev-tokenizer-analysis)"
 
-CODE_SOURCES: list[tuple[str, str, str]] = [
+CODE_SOURCES: list[tuple[str, str]] = [
+    (
+        "Objective-C / iOS (Instagram/IGListKit IGListAdapter.m)",
+        "https://raw.githubusercontent.com/Instagram/IGListKit/main/Source/IGListKit/IGListAdapter.m",
+    ),
+    (
+        "Java / Spring (RequestMappingHandlerAdapter.java)",
+        "https://raw.githubusercontent.com/spring-projects/spring-framework/main/spring-webmvc/src/main/java/org/springframework/web/servlet/mvc/method/annotation/RequestMappingHandlerAdapter.java",
+    ),
+    (
+        "Android Material (TextInputLayout.java)",
+        "https://raw.githubusercontent.com/material-components/material-components-android/master/lib/java/com/google/android/material/textfield/TextInputLayout.java",
+    ),
     (
         "C# / .NET (dotnet/runtime HttpClient.cs)",
-        "c",
         "https://raw.githubusercontent.com/dotnet/runtime/main/src/libraries/System.Net.Http/src/System/Net/Http/HttpClient.cs",
     ),
     (
-        "TypeScript (microsoft/vscode codeEditorWidget.ts)",
-        "c",
-        "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/editor/browser/widget/codeEditor/codeEditorWidget.ts",
+        "Android Material (NavigationBarView.java)",
+        "https://raw.githubusercontent.com/material-components/material-components-android/master/lib/java/com/google/android/material/navigation/NavigationBarView.java",
     ),
     (
-        "Objective-C (AFNetworking AFHTTPSessionManager.m)",
-        "c",
+        "Objective-C / iOS (AFNetworking AFHTTPSessionManager.m)",
         "https://raw.githubusercontent.com/AFNetworking/AFNetworking/master/AFNetworking/AFHTTPSessionManager.m",
     ),
     (
-        "Objective-C (SDWebImage SDWebImageManager.m)",
-        "c",
-        "https://raw.githubusercontent.com/SDWebImage/SDWebImage/master/SDWebImage/Core/SDWebImageManager.m",
+        "C# / .NET WinForms (DataGridView.cs)",
+        "https://raw.githubusercontent.com/dotnet/winforms/main/src/System.Windows.Forms/System/Windows/Forms/Controls/DataGridView/DataGridView.cs",
     ),
     (
-        "Swift (Alamofire Session.swift)",
-        "c",
+        "Android Jetpack Compose / Kotlin (AndroidComposeView.android.kt)",
+        "https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+    ),
+    (
+        "TypeScript (microsoft/vscode codeEditorWidget.ts)",
+        "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/editor/browser/widget/codeEditor/codeEditorWidget.ts",
+    ),
+    (
+        "AndroidX (RecyclerView.java)",
+        "https://raw.githubusercontent.com/androidx/androidx/androidx-main/recyclerview/recyclerview/src/main/java/androidx/recyclerview/widget/RecyclerView.java",
+    ),
+    (
+        "Swift / iOS (Alamofire Session.swift)",
         "https://raw.githubusercontent.com/Alamofire/Alamofire/master/Source/Core/Session.swift",
     ),
     (
-        "Kotlin / Android (OkHttp RealCall.kt)",
-        "c",
-        "https://raw.githubusercontent.com/square/okhttp/master/okhttp/src/commonJvmAndroid/kotlin/okhttp3/internal/connection/RealCall.kt",
-    ),
-    (
-        "Java / Spring (AbstractAutowireCapableBeanFactory.java)",
-        "c",
-        "https://raw.githubusercontent.com/spring-projects/spring-framework/main/spring-beans/src/main/java/org/springframework/beans/factory/support/AbstractAutowireCapableBeanFactory.java",
-    ),
-    (
         "React / JS (facebook/react ReactFiberWorkLoop.js)",
-        "c",
         "https://raw.githubusercontent.com/facebook/react/main/packages/react-reconciler/src/ReactFiberWorkLoop.js",
-    ),
-    (
-        "Go (Kubernetes schedule_one.go)",
-        "c",
-        "https://raw.githubusercontent.com/kubernetes/kubernetes/master/pkg/scheduler/schedule_one.go",
-    ),
-    (
-        "C++ (protobuf message.cc)",
-        "c",
-        "https://raw.githubusercontent.com/protocolbuffers/protobuf/main/src/google/protobuf/message.cc",
-    ),
-    (
-        "Rust (BurntSushi/ripgrep searcher/mod.rs)",
-        "c",
-        "https://raw.githubusercontent.com/BurntSushi/ripgrep/master/crates/searcher/src/searcher/mod.rs",
-    ),
-    (
-        "Python (python/cpython argparse.py)",
-        "py",
-        "https://raw.githubusercontent.com/python/cpython/main/Lib/argparse.py",
     ),
 ]
 
@@ -137,42 +125,6 @@ def strip_c_comments(code: str) -> str:
             out.append(ch)
             i += 1
     return "\n".join(ln for ln in "".join(out).splitlines() if ln.strip())
-
-
-def strip_py_comments(code: str) -> str:
-    import io
-    import tokenize
-
-    out_lines: list[str] = []
-    last_lineno = 1
-    last_col = 0
-    prev_toktype = tokenize.INDENT
-    buf: list[str] = []
-    try:
-        tokens = list(tokenize.generate_tokens(io.StringIO(code).readline))
-    except tokenize.TokenError:
-        return "\n".join(ln for ln in code.splitlines() if ln.strip() and not ln.lstrip().startswith("#"))
-
-    for toktype, tokstr, (sline, scol), (eline, ecol), _ in tokens:
-        if toktype == tokenize.COMMENT:
-            continue
-        if toktype == tokenize.STRING and prev_toktype in (tokenize.INDENT, tokenize.NEWLINE, tokenize.NL):
-            prev_toktype = toktype
-            continue
-        if sline > last_lineno:
-            last_col = 0
-        if scol > last_col:
-            buf.append(" " * (scol - last_col))
-        buf.append(tokstr)
-        last_col = ecol
-        last_lineno = eline
-        if toktype not in (tokenize.NL, tokenize.COMMENT):
-            prev_toktype = toktype
-    text = "".join(buf)
-    for ln in text.splitlines():
-        if ln.strip():
-            out_lines.append(ln)
-    return "\n".join(out_lines)
 
 
 def fetch_code(url: str) -> str:
@@ -239,11 +191,11 @@ def main() -> None:
             jev.count(text),
         )
 
-    code_fetched: list[tuple[str, str, str, str]] = []
+    code_fetched: list[tuple[str, str, str]] = []
     with ThreadPoolExecutor(max_workers=6) as pool:
-        futs = [(label, style, url, pool.submit(fetch_code, url)) for label, style, url in CODE_SOURCES]
-        for label, style, url, fut in futs:
-            code_fetched.append((label, style, url, fut.result()))
+        futs = [(label, url, pool.submit(fetch_code, url)) for label, url in CODE_SOURCES]
+        for label, url, fut in futs:
+            code_fetched.append((label, url, fut.result()))
 
     wiki_fetched: list[tuple[str, str, str]] = []
     for lang_name, lang, title in WIKI_SOURCES:
@@ -251,11 +203,10 @@ def main() -> None:
         wiki_fetched.append((f"{lang_name} Wikipedia ({title})", page_url, txt))
         time.sleep(0.35)
 
-    def eval_code(item: tuple[str, str, str, str]) -> dict:
-        label, style, url, full_raw = item
+    def eval_code(item: tuple[str, str, str]) -> dict:
+        label, url, full_raw = item
         raw_30k = full_raw[:30_000]
-        stripped_full = strip_c_comments(full_raw) if style == "c" else strip_py_comments(full_raw)
-        code_30k = stripped_full[:30_000]
+        code_30k = strip_c_comments(full_raw)[:30_000]
 
         q_raw, o_raw, j_raw = count_all(raw_30k)
         q_code, o_code, j_code = count_all(code_30k)
@@ -349,14 +300,14 @@ def main() -> None:
     out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     print("\n=== REAL OPEN-SOURCE CODE (30 KB: RAW vs. CODE-ONLY NO COMMENTS) ===")
-    print(f"{'Repository / File':54} | {'Raw':>6} | {'Code-only Qwen/o200k/Jev':>24} | {'Code vs Qwen':>15} | {'vs o200k':>8} | live")
-    print("-" * 126)
+    print(f"{'Repository / File':64} | {'Raw':>6} | {'Code-only Qwen/o200k/Jev':>24} | {'Code vs Qwen':>15} | {'vs o200k':>8} | live")
+    print("-" * 136)
     for r in code_rows:
         raw = r["raw_30kb"]
         co = r["code_only_no_comments_30kb"]
         lv = "OK" if r.get("live_spotcheck_code_only", {}).get("match") else ("-" if not api_key else "DIFF")
         print(
-            f"{r['workload']:54} | {raw['ratio_vs_qwen35']:5.2f}x | "
+            f"{r['workload']:64} | {raw['ratio_vs_qwen35']:5.2f}x | "
             f"{co['qwen35_tokens']:7d} / {co['o200k_tokens']:6d} / {co['jev_tokens']:6d} | "
             f"{co['ratio_vs_qwen35']:5.2f}x ({co['pct_vs_qwen35']:+6.1f}%) | {co['pct_vs_o200k']:+7.1f}% | {lv}"
         )

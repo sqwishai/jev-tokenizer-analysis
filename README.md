@@ -27,7 +27,7 @@ def allowed_merge(cand: bytes) -> bool:
    That single missing `+ 1` / `=` simultaneously explains:
    - Why the final byte is ignored (`j` stops at `len(cand) - 1`).
    - Why **10,551 non-Qwen `o200k_base` tokens** (`abab`, `crip`, `onday`, `oq`, `):\n`, etc.) leak into `FORMED` even though Pass 1 rejects non-Qwen chunks like `oworld`.
-   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase code without comments (+16% to +37% vs. Qwen 3.5; +27% to +44% vs. `o200k`)**, while leaving **English Wikipedia at +1.6%** and **`snake_case` code (Rust, Python) at -4.3% to -5.2%**.
+   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase code without comments (+21% to +42% vs. Qwen 3.5; +30% to +49% vs. `o200k`)**, while leaving **English Wikipedia at +1.6%**.
 
 2. **Image billing: `28×28` `ceil` patches × `2×` (~2.4–2.8× Qwen 3.5-VL native) + a hidden `+ T(asset_key)` bug.**
    - Exact formula: `2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)` with hard dimension bounds `280 <= width, height <= 1568 px` (`10×28` to `56×28`, HTTP 400 outside).
@@ -63,22 +63,22 @@ All **28 / 28** public corpora below (12 real open-source source files measured 
 
 ### 2. Real Open-Source Production Code (30 KB: Raw vs. Code-Only with Comments Stripped)
 
-Stripping license headers, Javadoc/JSDoc/XML doc comments, and inline prose comments removes neutral English text and exposes the pure code split: **CamelCase/PascalCase languages inflate +16% to +37% vs. Qwen 3.5 (+27% to +44% vs. `o200k`)**, while **`snake_case` languages (Rust, Python) actually underbill by -4.3% to -5.2% vs. Qwen 3.5** because `_` splits identifiers into Pass-1 hits while `o200k` punctuation/newline tokens (`):\n`, `],\n`) leak through Pass 2:
+Stripping license headers, Javadoc/JSDoc/XML doc comments, and inline prose comments removes neutral English text and exposes the pure code penalty across flagship mobile, web, and enterprise repositories — **+21% to +42% vs. Qwen 3.5 (+30% to +49% vs. `o200k`)** because Qwen's regex keeps CamelCase/PascalCase identifiers as single pre-tokens that miss Pass 1 and get shredded in Pass 2:
 
 | Open-source file (first 30 KB) | Raw vs. Qwen | Code-only Qwen 3.5 | Code-only `o200k` | Code-only Jev | **Code-only vs. Qwen 3.5** | **Code-only vs. `o200k`** | Live spotcheck |
 |---|---:|---:|---:|---:|---:|---:|---|
+| **Objective-C / iOS** (`Instagram/IGListKit` `IGListAdapter.m`) | 1.40× | 6,113 | 6,013 | **8,660** | **1.42× (+41.7%)** | **+44.0%** | exact |
+| **Java / Spring** (`RequestMappingHandlerAdapter.java`) | 1.28× | 6,380 | 5,888 | **8,772** | **1.38× (+37.5%)** | **+49.0%** | exact |
+| **Android Material** (`TextInputLayout.java`) | 1.27× | 6,436 | 6,168 | **8,809** | **1.37× (+36.9%)** | **+42.8%** | exact |
 | **C# / .NET** (`dotnet/runtime` `HttpClient.cs`) | 1.31× | 5,559 | 5,283 | **7,606** | **1.37× (+36.8%)** | **+44.0%** | exact |
-| **Objective-C** (`AFNetworking` `AFHTTPSessionManager.m`) | 1.29× | 2,897 | 2,833 | **3,790** | **1.31× (+30.8%)** | **+33.8%** | exact |
+| **Android Material** (`NavigationBarView.java`) | 1.23× | 6,274 | 5,877 | **8,279** | **1.32× (+32.0%)** | **+40.9%** | exact |
+| **Objective-C / iOS** (`AFNetworking` `AFHTTPSessionManager.m`) | 1.29× | 2,897 | 2,833 | **3,790** | **1.31× (+30.8%)** | **+33.8%** | exact |
+| **C# / .NET WinForms** (`DataGridView.cs`) | 1.29× | 6,863 | 6,412 | **8,930** | **1.30× (+30.1%)** | **+39.3%** | exact |
+| **Android Jetpack Compose / Kotlin** (`AndroidComposeView.android.kt`) | 1.26× | 6,070 | 5,834 | **7,850** | **1.29× (+29.3%)** | **+34.6%** | exact |
 | **TypeScript** (`microsoft/vscode` `codeEditorWidget.ts`) | 1.30× | 7,018 | 6,676 | **9,051** | **1.29× (+29.0%)** | **+35.6%** | exact |
-| **Swift** (`Alamofire` `Session.swift`) | 1.15× | 5,053 | 4,605 | **6,253** | **1.24× (+23.7%)** | **+35.8%** | exact |
-| **Java / Spring** (`AbstractAutowireCapableBeanFactory.java`) | 1.19× | 7,558 | 6,898 | **9,293** | **1.23× (+23.0%)** | **+34.7%** | exact |
-| **Objective-C** (`SDWebImage` `SDWebImageManager.m`) | 1.20× | 6,551 | 6,189 | **8,023** | **1.23× (+22.5%)** | **+29.6%** | exact |
+| **AndroidX** (`RecyclerView.java`) | 1.11× | 6,114 | 5,729 | **7,606** | **1.24× (+24.4%)** | **+32.8%** | exact |
+| **Swift / iOS** (`Alamofire` `Session.swift`) | 1.15× | 5,053 | 4,605 | **6,253** | **1.24× (+23.7%)** | **+35.8%** | exact |
 | **React / JS** (`facebook/react` `ReactFiberWorkLoop.js`) | 1.20× | 7,947 | 6,959 | **9,596** | **1.21× (+20.7%)** | **+37.9%** | exact |
-| **Kotlin / Android** (`square/okhttp` `RealCall.kt`) | 1.12× | 3,536 | 3,238 | **4,109** | **1.16× (+16.2%)** | **+26.9%** | exact |
-| **Go** (`kubernetes` `schedule_one.go`) | 1.11× | 8,675 | 8,047 | **9,755** | **1.12× (+12.4%)** | **+21.2%** | exact |
-| **C++** (`protobuf` `message.cc`, mixed style) | 1.06× | 5,632 | 5,094 | **5,891** | **1.05× (+4.6%)** | **+15.6%** | exact |
-| **Rust** (`BurntSushi/ripgrep` `searcher/mod.rs`) | 0.98× | 5,962 | 5,321 | **5,707** | **0.96× (-4.3%)** | +7.3% | exact |
-| **Python** (`python/cpython` `argparse.py`) | 0.98× | 6,798 | 6,240 | **6,442** | **0.95× (-5.2%)** | +3.2% | exact |
 
 ---
 

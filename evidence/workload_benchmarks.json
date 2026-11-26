@@ -1,9 +1,96 @@
 {
-  "timestamp_utc": "2026-11-26T17:34:58.854376+00:00",
+  "timestamp_utc": "2026-11-26T17:38:52.344181+00:00",
   "live_spotcheck_enabled": true,
   "live_spotcheck_matched": 28,
   "live_spotcheck_total": 28,
   "code_benchmarks": [
+    {
+      "workload": "Objective-C / iOS (Instagram/IGListKit IGListAdapter.m)",
+      "source_url": "https://raw.githubusercontent.com/Instagram/IGListKit/main/Source/IGListKit/IGListAdapter.m",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 5998,
+        "o200k_tokens": 5923,
+        "jev_tokens": 8379,
+        "ratio_vs_qwen35": 1.397,
+        "pct_vs_qwen35": 39.7,
+        "pct_vs_o200k": 41.5
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6113,
+        "o200k_tokens": 6013,
+        "jev_tokens": 8660,
+        "ratio_vs_qwen35": 1.417,
+        "pct_vs_qwen35": 41.7,
+        "ratio_vs_o200k": 1.44,
+        "pct_vs_o200k": 44.0
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 431,
+        "actual": 431,
+        "match": true
+      }
+    },
+    {
+      "workload": "Java / Spring (RequestMappingHandlerAdapter.java)",
+      "source_url": "https://raw.githubusercontent.com/spring-projects/spring-framework/main/spring-webmvc/src/main/java/org/springframework/web/servlet/mvc/method/annotation/RequestMappingHandlerAdapter.java",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6521,
+        "o200k_tokens": 6063,
+        "jev_tokens": 8345,
+        "ratio_vs_qwen35": 1.28,
+        "pct_vs_qwen35": 28.0,
+        "pct_vs_o200k": 37.6
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6380,
+        "o200k_tokens": 5888,
+        "jev_tokens": 8772,
+        "ratio_vs_qwen35": 1.375,
+        "pct_vs_qwen35": 37.5,
+        "ratio_vs_o200k": 1.49,
+        "pct_vs_o200k": 49.0
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 316,
+        "actual": 316,
+        "match": true
+      }
+    },
+    {
+      "workload": "Android Material (TextInputLayout.java)",
+      "source_url": "https://raw.githubusercontent.com/material-components/material-components-android/master/lib/java/com/google/android/material/textfield/TextInputLayout.java",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6645,
+        "o200k_tokens": 6441,
+        "jev_tokens": 8437,
+        "ratio_vs_qwen35": 1.27,
+        "pct_vs_qwen35": 27.0,
+        "pct_vs_o200k": 31.0
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6436,
+        "o200k_tokens": 6168,
+        "jev_tokens": 8809,
+        "ratio_vs_qwen35": 1.369,
+        "pct_vs_qwen35": 36.9,
+        "ratio_vs_o200k": 1.428,
+        "pct_vs_o200k": 42.8
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 309,
+        "actual": 309,
+        "match": true
+      }
+    },
     {
       "workload": "C# / .NET (dotnet/runtime HttpClient.cs)",
       "source_url": "https://raw.githubusercontent.com/dotnet/runtime/main/src/libraries/System.Net.Http/src/System/Net/Http/HttpClient.cs",
@@ -34,7 +121,36 @@
       }
     },
     {
-      "workload": "Objective-C (AFNetworking AFHTTPSessionManager.m)",
+      "workload": "Android Material (NavigationBarView.java)",
+      "source_url": "https://raw.githubusercontent.com/material-components/material-components-android/master/lib/java/com/google/android/material/navigation/NavigationBarView.java",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6854,
+        "o200k_tokens": 6369,
+        "jev_tokens": 8438,
+        "ratio_vs_qwen35": 1.231,
+        "pct_vs_qwen35": 23.1,
+        "pct_vs_o200k": 32.5
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 28311,
+        "qwen35_tokens": 6274,
+        "o200k_tokens": 5877,
+        "jev_tokens": 8279,
+        "ratio_vs_qwen35": 1.32,
+        "pct_vs_qwen35": 32.0,
+        "ratio_vs_o200k": 1.409,
+        "pct_vs_o200k": 40.9
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 300,
+        "actual": 300,
+        "match": true
+      }
+    },
+    {
+      "workload": "Objective-C / iOS (AFNetworking AFHTTPSessionManager.m)",
       "source_url": "https://raw.githubusercontent.com/AFNetworking/AFNetworking/master/AFNetworking/AFHTTPSessionManager.m",
       "raw_30kb": {
         "chars": 15716,
@@ -59,6 +175,64 @@
         "chars": 1500,
         "pred": 453,
         "actual": 453,
+        "match": true
+      }
+    },
+    {
+      "workload": "C# / .NET WinForms (DataGridView.cs)",
+      "source_url": "https://raw.githubusercontent.com/dotnet/winforms/main/src/System.Windows.Forms/System/Windows/Forms/Controls/DataGridView/DataGridView.cs",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6953,
+        "o200k_tokens": 6495,
+        "jev_tokens": 9000,
+        "ratio_vs_qwen35": 1.294,
+        "pct_vs_qwen35": 29.4,
+        "pct_vs_o200k": 38.6
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6863,
+        "o200k_tokens": 6412,
+        "jev_tokens": 8930,
+        "ratio_vs_qwen35": 1.301,
+        "pct_vs_qwen35": 30.1,
+        "ratio_vs_o200k": 1.393,
+        "pct_vs_o200k": 39.3
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 408,
+        "actual": 408,
+        "match": true
+      }
+    },
+    {
+      "workload": "Android Jetpack Compose / Kotlin (AndroidComposeView.android.kt)",
+      "source_url": "https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/ui/ui/src/androidMain/kotlin/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6106,
+        "o200k_tokens": 5863,
+        "jev_tokens": 7699,
+        "ratio_vs_qwen35": 1.261,
+        "pct_vs_qwen35": 26.1,
+        "pct_vs_o200k": 31.3
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6070,
+        "o200k_tokens": 5834,
+        "jev_tokens": 7850,
+        "ratio_vs_qwen35": 1.293,
+        "pct_vs_qwen35": 29.3,
+        "ratio_vs_o200k": 1.346,
+        "pct_vs_o200k": 34.6
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 355,
+        "actual": 355,
         "match": true
       }
     },
@@ -92,7 +266,36 @@
       }
     },
     {
-      "workload": "Swift (Alamofire Session.swift)",
+      "workload": "AndroidX (RecyclerView.java)",
+      "source_url": "https://raw.githubusercontent.com/androidx/androidx/androidx-main/recyclerview/recyclerview/src/main/java/androidx/recyclerview/widget/RecyclerView.java",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7002,
+        "o200k_tokens": 6588,
+        "jev_tokens": 7807,
+        "ratio_vs_qwen35": 1.115,
+        "pct_vs_qwen35": 11.5,
+        "pct_vs_o200k": 18.5
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6114,
+        "o200k_tokens": 5729,
+        "jev_tokens": 7606,
+        "ratio_vs_qwen35": 1.244,
+        "pct_vs_qwen35": 24.4,
+        "ratio_vs_o200k": 1.328,
+        "pct_vs_o200k": 32.8
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 317,
+        "actual": 317,
+        "match": true
+      }
+    },
+    {
+      "workload": "Swift / iOS (Alamofire Session.swift)",
       "source_url": "https://raw.githubusercontent.com/Alamofire/Alamofire/master/Source/Core/Session.swift",
       "raw_30kb": {
         "chars": 30000,
@@ -117,64 +320,6 @@
         "chars": 1500,
         "pred": 422,
         "actual": 422,
-        "match": true
-      }
-    },
-    {
-      "workload": "Java / Spring (AbstractAutowireCapableBeanFactory.java)",
-      "source_url": "https://raw.githubusercontent.com/spring-projects/spring-framework/main/spring-beans/src/main/java/org/springframework/beans/factory/support/AbstractAutowireCapableBeanFactory.java",
-      "raw_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 7106,
-        "o200k_tokens": 6575,
-        "jev_tokens": 8445,
-        "ratio_vs_qwen35": 1.188,
-        "pct_vs_qwen35": 18.8,
-        "pct_vs_o200k": 28.4
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 7558,
-        "o200k_tokens": 6898,
-        "jev_tokens": 9293,
-        "ratio_vs_qwen35": 1.23,
-        "pct_vs_qwen35": 23.0,
-        "ratio_vs_o200k": 1.347,
-        "pct_vs_o200k": 34.7
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 319,
-        "actual": 319,
-        "match": true
-      }
-    },
-    {
-      "workload": "Objective-C (SDWebImage SDWebImageManager.m)",
-      "source_url": "https://raw.githubusercontent.com/SDWebImage/SDWebImage/master/SDWebImage/Core/SDWebImageManager.m",
-      "raw_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 6502,
-        "o200k_tokens": 6179,
-        "jev_tokens": 7830,
-        "ratio_vs_qwen35": 1.204,
-        "pct_vs_qwen35": 20.4,
-        "pct_vs_o200k": 26.7
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 6551,
-        "o200k_tokens": 6189,
-        "jev_tokens": 8023,
-        "ratio_vs_qwen35": 1.225,
-        "pct_vs_qwen35": 22.5,
-        "ratio_vs_o200k": 1.296,
-        "pct_vs_o200k": 29.6
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 476,
-        "actual": 476,
         "match": true
       }
     },
@@ -204,151 +349,6 @@
         "chars": 1500,
         "pred": 493,
         "actual": 493,
-        "match": true
-      }
-    },
-    {
-      "workload": "Kotlin / Android (OkHttp RealCall.kt)",
-      "source_url": "https://raw.githubusercontent.com/square/okhttp/master/okhttp/src/commonJvmAndroid/kotlin/okhttp3/internal/connection/RealCall.kt",
-      "raw_30kb": {
-        "chars": 20070,
-        "qwen35_tokens": 4793,
-        "o200k_tokens": 4399,
-        "jev_tokens": 5384,
-        "ratio_vs_qwen35": 1.123,
-        "pct_vs_qwen35": 12.3,
-        "pct_vs_o200k": 22.4
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 14634,
-        "qwen35_tokens": 3536,
-        "o200k_tokens": 3238,
-        "jev_tokens": 4109,
-        "ratio_vs_qwen35": 1.162,
-        "pct_vs_qwen35": 16.2,
-        "ratio_vs_o200k": 1.269,
-        "pct_vs_o200k": 26.9
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 364,
-        "actual": 364,
-        "match": true
-      }
-    },
-    {
-      "workload": "Go (Kubernetes schedule_one.go)",
-      "source_url": "https://raw.githubusercontent.com/kubernetes/kubernetes/master/pkg/scheduler/schedule_one.go",
-      "raw_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 8165,
-        "o200k_tokens": 7594,
-        "jev_tokens": 9061,
-        "ratio_vs_qwen35": 1.11,
-        "pct_vs_qwen35": 11.0,
-        "pct_vs_o200k": 19.3
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 8675,
-        "o200k_tokens": 8047,
-        "jev_tokens": 9755,
-        "ratio_vs_qwen35": 1.124,
-        "pct_vs_qwen35": 12.4,
-        "ratio_vs_o200k": 1.212,
-        "pct_vs_o200k": 21.2
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 500,
-        "actual": 500,
-        "match": true
-      }
-    },
-    {
-      "workload": "C++ (protobuf message.cc)",
-      "source_url": "https://raw.githubusercontent.com/protocolbuffers/protobuf/main/src/google/protobuf/message.cc",
-      "raw_30kb": {
-        "chars": 24619,
-        "qwen35_tokens": 6364,
-        "o200k_tokens": 5776,
-        "jev_tokens": 6734,
-        "ratio_vs_qwen35": 1.058,
-        "pct_vs_qwen35": 5.8,
-        "pct_vs_o200k": 16.6
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 21321,
-        "qwen35_tokens": 5632,
-        "o200k_tokens": 5094,
-        "jev_tokens": 5891,
-        "ratio_vs_qwen35": 1.046,
-        "pct_vs_qwen35": 4.6,
-        "ratio_vs_o200k": 1.156,
-        "pct_vs_o200k": 15.6
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 435,
-        "actual": 435,
-        "match": true
-      }
-    },
-    {
-      "workload": "Rust (BurntSushi/ripgrep searcher/mod.rs)",
-      "source_url": "https://raw.githubusercontent.com/BurntSushi/ripgrep/master/crates/searcher/src/searcher/mod.rs",
-      "raw_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 7288,
-        "o200k_tokens": 6709,
-        "jev_tokens": 7170,
-        "ratio_vs_qwen35": 0.984,
-        "pct_vs_qwen35": -1.6,
-        "pct_vs_o200k": 6.9
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 23023,
-        "qwen35_tokens": 5962,
-        "o200k_tokens": 5321,
-        "jev_tokens": 5707,
-        "ratio_vs_qwen35": 0.957,
-        "pct_vs_qwen35": -4.3,
-        "ratio_vs_o200k": 1.073,
-        "pct_vs_o200k": 7.3
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 428,
-        "actual": 428,
-        "match": true
-      }
-    },
-    {
-      "workload": "Python (python/cpython argparse.py)",
-      "source_url": "https://raw.githubusercontent.com/python/cpython/main/Lib/argparse.py",
-      "raw_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 6738,
-        "o200k_tokens": 6292,
-        "jev_tokens": 6574,
-        "ratio_vs_qwen35": 0.976,
-        "pct_vs_qwen35": -2.4,
-        "pct_vs_o200k": 4.5
-      },
-      "code_only_no_comments_30kb": {
-        "chars": 30000,
-        "qwen35_tokens": 6798,
-        "o200k_tokens": 6240,
-        "jev_tokens": 6442,
-        "ratio_vs_qwen35": 0.948,
-        "pct_vs_qwen35": -5.2,
-        "ratio_vs_o200k": 1.032,
-        "pct_vs_o200k": 3.2
-      },
-      "live_spotcheck_code_only": {
-        "chars": 1500,
-        "pred": 420,
-        "actual": 420,
         "match": true
       }
     }
