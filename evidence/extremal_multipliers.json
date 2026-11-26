@@ -1,0 +1,493 @@
+{
+  "timestamp_utc": "2026-11-26T17:29:26.082856+00:00",
+  "scanned_qwen35_reachable_tokens": 247843,
+  "scanned_pass2_formed_tokens": 53851,
+  "global_single_token_max_overbill_ratio": 24,
+  "global_single_token_max_underbill_qwen_over_jev": 2.0,
+  "live_verified": true,
+  "live_matched": 22,
+  "live_total": 22,
+  "top_single_qwen_tokens": [
+    {
+      "jev_tokens": 24,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 96,
+      "text": "////////////////////////////////////////////////////////////////////////////////////////////////"
+    },
+    {
+      "jev_tokens": 17,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 71,
+      "text": " //////////////////////////////////////////////////////////////////////"
+    },
+    {
+      "jev_tokens": 16,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 64,
+      "text": "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 60,
+      "text": "////////////////////////////////////////////////////////////"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "utf8_bytes": 45,
+      "text": "ความเป็นส่วนตัว"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "utf8_bytes": 45,
+      "text": "อย่างเป็นทางการ"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 10,
+      "utf8_bytes": 45,
+      "text": "转载请附上原文出处链接和本声明"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 9,
+      "utf8_bytes": 45,
+      "text": "摘编或利用其它方式使用上述作品"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "utf8_bytes": 45,
+      "text": "ที่เที่ยวแห่งปี"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 9,
+      "utf8_bytes": 45,
+      "text": "凭营业执照依法自主开展经营活动"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 7,
+      "utf8_bytes": 45,
+      "text": "ที่มีสระว่ายน้ำ"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 6,
+      "utf8_bytes": 45,
+      "text": "ประสบความสำเร็จ"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "utf8_bytes": 45,
+      "text": "อย่างไม่ถูกต้อง"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 13,
+      "utf8_bytes": 45,
+      "text": "加倍支付迟延履行期间的债务利息"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 45,
+      "text": "ข้อมูลเพิ่มเติม"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 5,
+      "utf8_bytes": 43,
+      "text": " ตามระดับโรงแรม"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 8,
+      "utf8_bytes": 43,
+      "text": " กิจกรรมน่าสนใจ"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "utf8_bytes": 43,
+      "text": " ดูครั้งสุดท้าย"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 8,
+      "utf8_bytes": 43,
+      "text": " โรงแรมบรรยากาศ"
+    },
+    {
+      "jev_tokens": 15,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 8,
+      "utf8_bytes": 40,
+      "text": ".DataGridViewColumnHeadersHeightSizeMode"
+    },
+    {
+      "jev_tokens": 14,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "utf8_bytes": 56,
+      "text": "////////////////////////////////////////////////////////"
+    },
+    {
+      "jev_tokens": 14,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 7,
+      "utf8_bytes": 42,
+      "text": "อำนวยความสะดวก"
+    },
+    {
+      "jev_tokens": 14,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 5,
+      "utf8_bytes": 42,
+      "text": "ติดต่อธุรกิจใน"
+    },
+    {
+      "jev_tokens": 14,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 8,
+      "utf8_bytes": 42,
+      "text": "อิเล็กทรอนิกส์"
+    },
+    {
+      "jev_tokens": 14,
+      "qwen35_tokens": 1,
+      "o200k_tokens": 3,
+      "utf8_bytes": 42,
+      "text": "ได้รับความนิยม"
+    }
+  ],
+  "underbill_floor_examples": [
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ";\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ");\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": " {\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ",\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ")\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ">\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ".\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": " }\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": ":\n"
+    },
+    {
+      "qwen_over_jev": 2.0,
+      "jev_tokens": 1,
+      "qwen35_tokens": 2,
+      "text": "}\n"
+    }
+  ],
+  "curated_extremes": [
+    {
+      "category": "global_max_single_token",
+      "label": "C/Java 96-slash divider ('/' * 96)",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 24,
+      "jev_over_qwen35": 24.0,
+      "jev_over_o200k": 12.0,
+      "jev_live_tokens": 24,
+      "live_match": true
+    },
+    {
+      "category": "scalable_max_plain_text",
+      "label": "Spaced 70-slash divider x10 ((' ' + '/' * 70) * 10)",
+      "qwen35_tokens": 10,
+      "o200k_tokens": 20,
+      "jev_predicted_tokens": 170,
+      "jev_over_qwen35": 17.0,
+      "jev_over_o200k": 8.5,
+      "jev_live_tokens": 170,
+      "live_match": true
+    },
+    {
+      "category": "scalable_16x_both",
+      "label": "Em-dash run ('—' * 160)",
+      "qwen35_tokens": 10,
+      "o200k_tokens": 10,
+      "jev_predicted_tokens": 160,
+      "jev_over_qwen35": 16.0,
+      "jev_over_o200k": 16.0,
+      "jev_live_tokens": 160,
+      "live_match": true
+    },
+    {
+      "category": "scalable_16x_both",
+      "label": "Tilde run ('~' * 320)",
+      "qwen35_tokens": 10,
+      "o200k_tokens": 10,
+      "jev_predicted_tokens": 160,
+      "jev_over_qwen35": 16.0,
+      "jev_over_o200k": 16.0,
+      "jev_live_tokens": 160,
+      "live_match": true
+    },
+    {
+      "category": "scalable_16x_both",
+      "label": "Underscore run ('_' * 640)",
+      "qwen35_tokens": 10,
+      "o200k_tokens": 10,
+      "jev_predicted_tokens": 160,
+      "jev_over_qwen35": 16.0,
+      "jev_over_o200k": 16.0,
+      "jev_live_tokens": 160,
+      "live_match": true
+    },
+    {
+      "category": "scalable_16x_both",
+      "label": "Slash run ('/' * 960)",
+      "qwen35_tokens": 15,
+      "o200k_tokens": 15,
+      "jev_predicted_tokens": 240,
+      "jev_over_qwen35": 16.0,
+      "jev_over_o200k": 16.0,
+      "jev_live_tokens": 240,
+      "live_match": true
+    },
+    {
+      "category": "scalable_16x_qwen",
+      "label": "Percent run ('%' * 640)",
+      "qwen35_tokens": 10,
+      "o200k_tokens": 20,
+      "jev_predicted_tokens": 160,
+      "jev_over_qwen35": 16.0,
+      "jev_over_o200k": 8.0,
+      "jev_live_tokens": 160,
+      "live_match": true
+    },
+    {
+      "category": "code_block_banner",
+      "label": "97-char C block header ('/' + '*' * 96)",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 13,
+      "jev_over_qwen35": 13.0,
+      "jev_over_o200k": 6.5,
+      "jev_live_tokens": 13,
+      "live_match": true
+    },
+    {
+      "category": "real_code_csharp",
+      "label": "C# / .NET: .DataGridViewColumnHeadersHeightSizeMode",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 8,
+      "jev_predicted_tokens": 15,
+      "jev_over_qwen35": 15.0,
+      "jev_over_o200k": 1.875,
+      "jev_live_tokens": 15,
+      "live_match": true
+    },
+    {
+      "category": "real_code_objc",
+      "label": "Objective-C / iOS: ' dequeueReusableCellWithIdentifier'",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 5,
+      "jev_predicted_tokens": 12,
+      "jev_over_qwen35": 12.0,
+      "jev_over_o200k": 2.4,
+      "jev_live_tokens": 12,
+      "live_match": true
+    },
+    {
+      "category": "real_code_objc",
+      "label": "Objective-C / iOS: .translatesAutoresizingMaskIntoConstraints",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 5,
+      "jev_predicted_tokens": 11,
+      "jev_over_qwen35": 11.0,
+      "jev_over_o200k": 2.2,
+      "jev_live_tokens": 11,
+      "live_match": true
+    },
+    {
+      "category": "real_code_android",
+      "label": "Android / Java: NavigationItemSelectedListener",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "jev_predicted_tokens": 11,
+      "jev_over_qwen35": 11.0,
+      "jev_over_o200k": 2.75,
+      "jev_live_tokens": 11,
+      "live_match": true
+    },
+    {
+      "category": "real_code_java",
+      "label": "Java / Android: ' UnsupportedOperationException'",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 3,
+      "jev_predicted_tokens": 10,
+      "jev_over_qwen35": 10.0,
+      "jev_over_o200k": 3.333,
+      "jev_live_tokens": 10,
+      "live_match": true
+    },
+    {
+      "category": "real_code_js",
+      "label": "JS / Jest: toHaveBeenCalledWith",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 5,
+      "jev_predicted_tokens": 9,
+      "jev_over_qwen35": 9.0,
+      "jev_over_o200k": 1.8,
+      "jev_live_tokens": 9,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_thai",
+      "label": "Thai ('more info'): ข้อมูลเพิ่มเติม",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 15,
+      "jev_over_qwen35": 15.0,
+      "jev_over_o200k": 7.5,
+      "jev_live_tokens": 15,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_thai",
+      "label": "Thai ('privacy'): ความเป็นส่วนตัว",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 4,
+      "jev_predicted_tokens": 15,
+      "jev_over_qwen35": 15.0,
+      "jev_over_o200k": 3.75,
+      "jev_live_tokens": 15,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_chinese",
+      "label": "Chinese footer: 转载请附上原文出处链接和本声明",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 10,
+      "jev_predicted_tokens": 15,
+      "jev_over_qwen35": 15.0,
+      "jev_over_o200k": 1.5,
+      "jev_live_tokens": 15,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_russian",
+      "label": "Russian ('financing'): ' финансирования'",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 14,
+      "jev_over_qwen35": 14.0,
+      "jev_over_o200k": 7.0,
+      "jev_live_tokens": 14,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_russian",
+      "label": "Russian ('economic'): ' экономического'",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 14,
+      "jev_over_qwen35": 14.0,
+      "jev_over_o200k": 7.0,
+      "jev_live_tokens": 14,
+      "live_match": true
+    },
+    {
+      "category": "real_lang_arabic",
+      "label": "Arabic ('strategic'): ' الاستراتيجية'",
+      "qwen35_tokens": 1,
+      "o200k_tokens": 2,
+      "jev_predicted_tokens": 12,
+      "jev_over_qwen35": 12.0,
+      "jev_over_o200k": 6.0,
+      "jev_live_tokens": 12,
+      "live_match": true
+    },
+    {
+      "category": "underbill_floor",
+      "label": "Repeated 'ab' * 100 (0.50x underbilling floor)",
+      "qwen35_tokens": 100,
+      "o200k_tokens": 50,
+      "jev_predicted_tokens": 50,
+      "jev_over_qwen35": 0.5,
+      "jev_over_o200k": 1.0,
+      "jev_live_tokens": 50,
+      "live_match": true
+    },
+    {
+      "category": "underbill_floor",
+      "label": "15-hyphen newline ('-' * 15 + '\\n', 0.50x)",
+      "qwen35_tokens": 2,
+      "o200k_tokens": 1,
+      "jev_predicted_tokens": 1,
+      "jev_over_qwen35": 0.5,
+      "jev_over_o200k": 1.0,
+      "jev_live_tokens": 1,
+      "live_match": true
+    }
+  ]
+}
