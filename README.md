@@ -27,7 +27,7 @@ def allowed_merge(cand: bytes) -> bool:
    That single missing `+ 1` / `=` simultaneously explains:
    - Why the final byte is ignored (`j` stops at `len(cand) - 1`).
    - Why **10,551 non-Qwen `o200k_base` tokens** (`abab`, `crip`, `onday`, `oq`, `):\n`, etc.) leak into `FORMED` even though Pass 1 rejects non-Qwen chunks like `oworld`.
-   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase source code (+19% to +32%)**, while leaving **English Wikipedia at +1.6%** and **`snake_case` code (Rust, Python) at -1.6% to -2.4%**.
+   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase code without comments (+16% to +37% vs. Qwen 3.5; +27% to +44% vs. `o200k`)**, while leaving **English Wikipedia at +1.6%** and **`snake_case` code (Rust, Python) at -4.3% to -5.2%**.
 
 2. **Image billing: `28×28` `ceil` patches × `2×` (~2.4–2.8× Qwen 3.5-VL native) + a hidden `+ T(asset_key)` bug.**
    - Exact formula: `2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)` with hard dimension bounds `280 <= width, height <= 1568 px` (`10×28` to `56×28`, HTTP 400 outside).
@@ -38,7 +38,7 @@ def allowed_merge(cand: bytes) -> bool:
 
 ## Real-World Workload Benchmarks (No Synthetic Cherry-Picking)
 
-All **24 / 24** public corpora below (8 real open-source source files + 16 real Wikipedia `"Earth"` articles) were evaluated locally with our bit-exact reconstruction and **spot-checked live (first 1,500 chars of every file/article) against `typesafe/jev-1.14` with 24 / 24 exact token matches** (`evidence/workload_benchmarks.json`).
+All **28 / 28** public corpora below (12 real open-source source files measured both raw and comment-stripped + 16 real Wikipedia `"Earth"` articles) were evaluated locally with our bit-exact reconstruction and **spot-checked live (first 1,500 chars of every corpus) against `typesafe/jev-1.14` with 28 / 28 exact token matches** (`evidence/workload_benchmarks.json`).
 
 ### 1. Real Wikipedia Articles (first 8,000 chars of `"Earth"` across 16 languages)
 
@@ -61,20 +61,24 @@ All **24 / 24** public corpora below (8 real open-source source files + 16 real 
 | **German** (`Erde`) | 2,133 | 2,025 | **2,287** | **1.07× (+7.2%)** | +12.9% | exact |
 | **English** (`Earth`) | 1,756 | 1,685 | **1,784** | **1.02× (+1.6%)** | +5.9% | exact |
 
-### 2. Real Open-Source Production Code (first 30 KB of each file)
+### 2. Real Open-Source Production Code (30 KB: Raw vs. Code-Only with Comments Stripped)
 
-Notice the sharp split between **CamelCase/PascalCase languages (+19% to +32%)** — where Qwen's regex keeps multi-word identifiers unsplit so they miss Pass 1 and get shredded in Pass 2 — and **`snake_case` languages (-1.6% to -2.4%)**, where `_` separates words into Pass-1 hits while `o200k` punctuation merges (`):\n`, `],\n`) leak through Pass 2:
+Stripping license headers, Javadoc/JSDoc/XML doc comments, and inline prose comments removes neutral English text and exposes the pure code split: **CamelCase/PascalCase languages inflate +16% to +37% vs. Qwen 3.5 (+27% to +44% vs. `o200k`)**, while **`snake_case` languages (Rust, Python) actually underbill by -4.3% to -5.2% vs. Qwen 3.5** because `_` splits identifiers into Pass-1 hits while `o200k` punctuation/newline tokens (`):\n`, `],\n`) leak through Pass 2:
 
-| Open-source file (first 30 KB) | Qwen 3.5 | `o200k` | Jev | **Jev / Qwen 3.5** | **vs. `o200k`** | Live spotcheck |
-|---|---:|---:|---:|---:|---:|---|
-| **C# / .NET** (`dotnet/runtime` `HttpClient.cs`) | 5,709 | 5,492 | **7,508** | **1.31× (+31.5%)** | +36.7% | exact |
-| **TypeScript** (`microsoft/vscode` `codeEditorWidget.ts`) | 6,938 | 6,610 | **9,038** | **1.30× (+30.3%)** | +36.7% | exact |
-| **Objective-C** (`AFNetworking` `AFHTTPSessionManager.m`) | 3,200 | 3,123 | **4,142** | **1.29× (+29.4%)** | +32.6% | exact |
-| **Objective-C** (`SDWebImage` `SDWebImageManager.m`) | 6,502 | 6,179 | **7,830** | **1.20× (+20.4%)** | +26.7% | exact |
-| **React / JS** (`facebook/react` `ReactFiberWorkLoop.js`) | 7,755 | 6,845 | **9,278** | **1.20× (+19.6%)** | +35.5% | exact |
-| **Java / Spring** (`AbstractAutowireCapableBeanFactory.java`) | 7,106 | 6,575 | **8,445** | **1.19× (+18.8%)** | +28.4% | exact |
-| **Rust** (`BurntSushi/ripgrep` `searcher/mod.rs`) | 7,288 | 6,709 | **7,170** | **0.98× (-1.6%)** | +6.9% | exact |
-| **Python** (`python/cpython` `argparse.py`) | 6,738 | 6,292 | **6,574** | **0.98× (-2.4%)** | +4.5% | exact |
+| Open-source file (first 30 KB) | Raw vs. Qwen | Code-only Qwen 3.5 | Code-only `o200k` | Code-only Jev | **Code-only vs. Qwen 3.5** | **Code-only vs. `o200k`** | Live spotcheck |
+|---|---:|---:|---:|---:|---:|---:|---|
+| **C# / .NET** (`dotnet/runtime` `HttpClient.cs`) | 1.31× | 5,559 | 5,283 | **7,606** | **1.37× (+36.8%)** | **+44.0%** | exact |
+| **Objective-C** (`AFNetworking` `AFHTTPSessionManager.m`) | 1.29× | 2,897 | 2,833 | **3,790** | **1.31× (+30.8%)** | **+33.8%** | exact |
+| **TypeScript** (`microsoft/vscode` `codeEditorWidget.ts`) | 1.30× | 7,018 | 6,676 | **9,051** | **1.29× (+29.0%)** | **+35.6%** | exact |
+| **Swift** (`Alamofire` `Session.swift`) | 1.15× | 5,053 | 4,605 | **6,253** | **1.24× (+23.7%)** | **+35.8%** | exact |
+| **Java / Spring** (`AbstractAutowireCapableBeanFactory.java`) | 1.19× | 7,558 | 6,898 | **9,293** | **1.23× (+23.0%)** | **+34.7%** | exact |
+| **Objective-C** (`SDWebImage` `SDWebImageManager.m`) | 1.20× | 6,551 | 6,189 | **8,023** | **1.23× (+22.5%)** | **+29.6%** | exact |
+| **React / JS** (`facebook/react` `ReactFiberWorkLoop.js`) | 1.20× | 7,947 | 6,959 | **9,596** | **1.21× (+20.7%)** | **+37.9%** | exact |
+| **Kotlin / Android** (`square/okhttp` `RealCall.kt`) | 1.12× | 3,536 | 3,238 | **4,109** | **1.16× (+16.2%)** | **+26.9%** | exact |
+| **Go** (`kubernetes` `schedule_one.go`) | 1.11× | 8,675 | 8,047 | **9,755** | **1.12× (+12.4%)** | **+21.2%** | exact |
+| **C++** (`protobuf` `message.cc`, mixed style) | 1.06× | 5,632 | 5,094 | **5,891** | **1.05× (+4.6%)** | **+15.6%** | exact |
+| **Rust** (`BurntSushi/ripgrep` `searcher/mod.rs`) | 0.98× | 5,962 | 5,321 | **5,707** | **0.96× (-4.3%)** | +7.3% | exact |
+| **Python** (`python/cpython` `argparse.py`) | 0.98× | 6,798 | 6,240 | **6,442** | **0.95× (-5.2%)** | +3.2% | exact |
 
 ---
 
@@ -191,7 +195,7 @@ Requires Python 3.10+ and [`uv`](https://docs.astral.sh/uv/). `Qwen/Qwen3.5-9B`'
 # 1. Verify bit-for-bit across all 199,998 o200k_base tokens vs LabGuy94/jevtok jev-1.13.bin
 uv run python scripts/verify_full_vocab.py
 
-# 2. Benchmark 8 real open-source files + 16 Wikipedia articles (add OPENROUTER_API_KEY to live spotcheck all 24)
+# 2. Benchmark 12 real open-source files (raw & comment-stripped) + 16 Wikipedia articles (add OPENROUTER_API_KEY to live spotcheck all 28)
 uv run python scripts/benchmark_workloads.py
 
 # 3. Exhaustively scan all 247,843 Qwen 3.5 tokens for extremal multipliers (add OPENROUTER_API_KEY to live-verify 22 extremes)
@@ -213,10 +217,10 @@ uv run python scripts/run_image_and_parity_probes.py
 - `scripts/verify_full_vocab.py` — Reproduces the 199,998-token diff against `LabGuy94/jevtok` (`jev-1.13.bin`).
 - `scripts/run_live_probes.py` — Runs 71 state probes, 11 `output_tokens` probes, `instructions` check, and version parity.
 - `scripts/run_image_and_parity_probes.py` — Runs 22 image resolution/step probes, 8 dimension-bound probes, 10 variant/key probes, 9 constant probes, 20 `jev-1.13`/`jev-1.14` parity probes, and 21 OpenRouter vs direct TypeSafe parity probes.
-- `scripts/benchmark_workloads.py` — Benchmarks 8 real open-source code files + 16 real Wikipedia `"Earth"` articles with live spotchecks.
+- `scripts/benchmark_workloads.py` — Benchmarks 12 real open-source code files (both raw and comment-stripped) + 16 real Wikipedia `"Earth"` articles with live spotchecks.
 - `scripts/find_extremal_multipliers.py` — Exhaustive 247,843-token extremal overbilling/underbilling scanner with 22 live checks.
 - `evidence/full_vocab_verification.json` — Verified 199,998-token bitmap diff output.
 - `evidence/live_probes.json` — Verified live text probe results.
 - `evidence/image_and_parity_probes.json` — Verified live image, constant, version-parity, and endpoint-parity results.
-- `evidence/workload_benchmarks.json` — Verified 24/24 real-corpus workload benchmark results.
+- `evidence/workload_benchmarks.json` — Verified 28/28 real-corpus workload benchmark results.
 - `evidence/extremal_multipliers.json` — Verified 22/22 extremal multiplier scan results.

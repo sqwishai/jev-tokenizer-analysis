@@ -1,158 +1,361 @@
 {
-  "timestamp_utc": "2026-11-26T17:29:19.235649+00:00",
+  "timestamp_utc": "2026-11-26T17:34:58.854376+00:00",
   "live_spotcheck_enabled": true,
-  "live_spotcheck_matched": 24,
-  "live_spotcheck_total": 24,
+  "live_spotcheck_matched": 28,
+  "live_spotcheck_total": 28,
   "code_benchmarks": [
     {
       "workload": "C# / .NET (dotnet/runtime HttpClient.cs)",
-      "kind": "code",
       "source_url": "https://raw.githubusercontent.com/dotnet/runtime/main/src/libraries/System.Net.Http/src/System/Net/Http/HttpClient.cs",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 5709,
-      "o200k_tokens": 5492,
-      "jev_tokens": 7508,
-      "ratio_vs_qwen35": 1.315,
-      "pct_vs_qwen35": 31.5,
-      "ratio_vs_o200k": 1.367,
-      "pct_vs_o200k": 36.7,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 373,
-      "live_spotcheck_actual": 373,
-      "live_spotcheck_match": true
-    },
-    {
-      "workload": "TypeScript (microsoft/vscode codeEditorWidget.ts)",
-      "kind": "code",
-      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/editor/browser/widget/codeEditor/codeEditorWidget.ts",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 6938,
-      "o200k_tokens": 6610,
-      "jev_tokens": 9038,
-      "ratio_vs_qwen35": 1.303,
-      "pct_vs_qwen35": 30.3,
-      "ratio_vs_o200k": 1.367,
-      "pct_vs_o200k": 36.7,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 344,
-      "live_spotcheck_actual": 344,
-      "live_spotcheck_match": true
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 5709,
+        "o200k_tokens": 5492,
+        "jev_tokens": 7508,
+        "ratio_vs_qwen35": 1.315,
+        "pct_vs_qwen35": 31.5,
+        "pct_vs_o200k": 36.7
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 5559,
+        "o200k_tokens": 5283,
+        "jev_tokens": 7606,
+        "ratio_vs_qwen35": 1.368,
+        "pct_vs_qwen35": 36.8,
+        "ratio_vs_o200k": 1.44,
+        "pct_vs_o200k": 44.0
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 379,
+        "actual": 379,
+        "match": true
+      }
     },
     {
       "workload": "Objective-C (AFNetworking AFHTTPSessionManager.m)",
-      "kind": "code",
       "source_url": "https://raw.githubusercontent.com/AFNetworking/AFNetworking/master/AFNetworking/AFHTTPSessionManager.m",
-      "chars": 15716,
-      "utf8_bytes": 15718,
-      "qwen35_tokens": 3200,
-      "o200k_tokens": 3123,
-      "jev_tokens": 4142,
-      "ratio_vs_qwen35": 1.294,
-      "pct_vs_qwen35": 29.4,
-      "ratio_vs_o200k": 1.326,
-      "pct_vs_o200k": 32.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 361,
-      "live_spotcheck_actual": 361,
-      "live_spotcheck_match": true
+      "raw_30kb": {
+        "chars": 15716,
+        "qwen35_tokens": 3200,
+        "o200k_tokens": 3123,
+        "jev_tokens": 4142,
+        "ratio_vs_qwen35": 1.294,
+        "pct_vs_qwen35": 29.4,
+        "pct_vs_o200k": 32.6
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 14282,
+        "qwen35_tokens": 2897,
+        "o200k_tokens": 2833,
+        "jev_tokens": 3790,
+        "ratio_vs_qwen35": 1.308,
+        "pct_vs_qwen35": 30.8,
+        "ratio_vs_o200k": 1.338,
+        "pct_vs_o200k": 33.8
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 453,
+        "actual": 453,
+        "match": true
+      }
     },
     {
-      "workload": "Objective-C (SDWebImage SDWebImageManager.m)",
-      "kind": "code",
-      "source_url": "https://raw.githubusercontent.com/SDWebImage/SDWebImage/master/SDWebImage/Core/SDWebImageManager.m",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 6502,
-      "o200k_tokens": 6179,
-      "jev_tokens": 7830,
-      "ratio_vs_qwen35": 1.204,
-      "pct_vs_qwen35": 20.4,
-      "ratio_vs_o200k": 1.267,
-      "pct_vs_o200k": 26.7,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 446,
-      "live_spotcheck_actual": 446,
-      "live_spotcheck_match": true
+      "workload": "TypeScript (microsoft/vscode codeEditorWidget.ts)",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/editor/browser/widget/codeEditor/codeEditorWidget.ts",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6938,
+        "o200k_tokens": 6610,
+        "jev_tokens": 9038,
+        "ratio_vs_qwen35": 1.303,
+        "pct_vs_qwen35": 30.3,
+        "pct_vs_o200k": 36.7
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7018,
+        "o200k_tokens": 6676,
+        "jev_tokens": 9051,
+        "ratio_vs_qwen35": 1.29,
+        "pct_vs_qwen35": 29.0,
+        "ratio_vs_o200k": 1.356,
+        "pct_vs_o200k": 35.6
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 400,
+        "actual": 400,
+        "match": true
+      }
     },
     {
-      "workload": "React / JS (facebook/react ReactFiberWorkLoop.js)",
-      "kind": "code",
-      "source_url": "https://raw.githubusercontent.com/facebook/react/main/packages/react-reconciler/src/ReactFiberWorkLoop.js",
-      "chars": 30000,
-      "utf8_bytes": 30002,
-      "qwen35_tokens": 7755,
-      "o200k_tokens": 6845,
-      "jev_tokens": 9278,
-      "ratio_vs_qwen35": 1.196,
-      "pct_vs_qwen35": 19.6,
-      "ratio_vs_o200k": 1.355,
-      "pct_vs_o200k": 35.5,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 468,
-      "live_spotcheck_actual": 468,
-      "live_spotcheck_match": true
+      "workload": "Swift (Alamofire Session.swift)",
+      "source_url": "https://raw.githubusercontent.com/Alamofire/Alamofire/master/Source/Core/Session.swift",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 5946,
+        "o200k_tokens": 5671,
+        "jev_tokens": 6857,
+        "ratio_vs_qwen35": 1.153,
+        "pct_vs_qwen35": 15.3,
+        "pct_vs_o200k": 20.9
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 5053,
+        "o200k_tokens": 4605,
+        "jev_tokens": 6253,
+        "ratio_vs_qwen35": 1.237,
+        "pct_vs_qwen35": 23.7,
+        "ratio_vs_o200k": 1.358,
+        "pct_vs_o200k": 35.8
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 422,
+        "actual": 422,
+        "match": true
+      }
     },
     {
       "workload": "Java / Spring (AbstractAutowireCapableBeanFactory.java)",
-      "kind": "code",
       "source_url": "https://raw.githubusercontent.com/spring-projects/spring-framework/main/spring-beans/src/main/java/org/springframework/beans/factory/support/AbstractAutowireCapableBeanFactory.java",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 7106,
-      "o200k_tokens": 6575,
-      "jev_tokens": 8445,
-      "ratio_vs_qwen35": 1.188,
-      "pct_vs_qwen35": 18.8,
-      "ratio_vs_o200k": 1.284,
-      "pct_vs_o200k": 28.4,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 316,
-      "live_spotcheck_actual": 316,
-      "live_spotcheck_match": true
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7106,
+        "o200k_tokens": 6575,
+        "jev_tokens": 8445,
+        "ratio_vs_qwen35": 1.188,
+        "pct_vs_qwen35": 18.8,
+        "pct_vs_o200k": 28.4
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7558,
+        "o200k_tokens": 6898,
+        "jev_tokens": 9293,
+        "ratio_vs_qwen35": 1.23,
+        "pct_vs_qwen35": 23.0,
+        "ratio_vs_o200k": 1.347,
+        "pct_vs_o200k": 34.7
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 319,
+        "actual": 319,
+        "match": true
+      }
     },
     {
-      "workload": "Rust (BurntSushi/ripgrep searcher.rs)",
-      "kind": "code",
+      "workload": "Objective-C (SDWebImage SDWebImageManager.m)",
+      "source_url": "https://raw.githubusercontent.com/SDWebImage/SDWebImage/master/SDWebImage/Core/SDWebImageManager.m",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6502,
+        "o200k_tokens": 6179,
+        "jev_tokens": 7830,
+        "ratio_vs_qwen35": 1.204,
+        "pct_vs_qwen35": 20.4,
+        "pct_vs_o200k": 26.7
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6551,
+        "o200k_tokens": 6189,
+        "jev_tokens": 8023,
+        "ratio_vs_qwen35": 1.225,
+        "pct_vs_qwen35": 22.5,
+        "ratio_vs_o200k": 1.296,
+        "pct_vs_o200k": 29.6
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 476,
+        "actual": 476,
+        "match": true
+      }
+    },
+    {
+      "workload": "React / JS (facebook/react ReactFiberWorkLoop.js)",
+      "source_url": "https://raw.githubusercontent.com/facebook/react/main/packages/react-reconciler/src/ReactFiberWorkLoop.js",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7755,
+        "o200k_tokens": 6845,
+        "jev_tokens": 9278,
+        "ratio_vs_qwen35": 1.196,
+        "pct_vs_qwen35": 19.6,
+        "pct_vs_o200k": 35.5
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7947,
+        "o200k_tokens": 6959,
+        "jev_tokens": 9596,
+        "ratio_vs_qwen35": 1.207,
+        "pct_vs_qwen35": 20.7,
+        "ratio_vs_o200k": 1.379,
+        "pct_vs_o200k": 37.9
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 493,
+        "actual": 493,
+        "match": true
+      }
+    },
+    {
+      "workload": "Kotlin / Android (OkHttp RealCall.kt)",
+      "source_url": "https://raw.githubusercontent.com/square/okhttp/master/okhttp/src/commonJvmAndroid/kotlin/okhttp3/internal/connection/RealCall.kt",
+      "raw_30kb": {
+        "chars": 20070,
+        "qwen35_tokens": 4793,
+        "o200k_tokens": 4399,
+        "jev_tokens": 5384,
+        "ratio_vs_qwen35": 1.123,
+        "pct_vs_qwen35": 12.3,
+        "pct_vs_o200k": 22.4
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 14634,
+        "qwen35_tokens": 3536,
+        "o200k_tokens": 3238,
+        "jev_tokens": 4109,
+        "ratio_vs_qwen35": 1.162,
+        "pct_vs_qwen35": 16.2,
+        "ratio_vs_o200k": 1.269,
+        "pct_vs_o200k": 26.9
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 364,
+        "actual": 364,
+        "match": true
+      }
+    },
+    {
+      "workload": "Go (Kubernetes schedule_one.go)",
+      "source_url": "https://raw.githubusercontent.com/kubernetes/kubernetes/master/pkg/scheduler/schedule_one.go",
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 8165,
+        "o200k_tokens": 7594,
+        "jev_tokens": 9061,
+        "ratio_vs_qwen35": 1.11,
+        "pct_vs_qwen35": 11.0,
+        "pct_vs_o200k": 19.3
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 8675,
+        "o200k_tokens": 8047,
+        "jev_tokens": 9755,
+        "ratio_vs_qwen35": 1.124,
+        "pct_vs_qwen35": 12.4,
+        "ratio_vs_o200k": 1.212,
+        "pct_vs_o200k": 21.2
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 500,
+        "actual": 500,
+        "match": true
+      }
+    },
+    {
+      "workload": "C++ (protobuf message.cc)",
+      "source_url": "https://raw.githubusercontent.com/protocolbuffers/protobuf/main/src/google/protobuf/message.cc",
+      "raw_30kb": {
+        "chars": 24619,
+        "qwen35_tokens": 6364,
+        "o200k_tokens": 5776,
+        "jev_tokens": 6734,
+        "ratio_vs_qwen35": 1.058,
+        "pct_vs_qwen35": 5.8,
+        "pct_vs_o200k": 16.6
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 21321,
+        "qwen35_tokens": 5632,
+        "o200k_tokens": 5094,
+        "jev_tokens": 5891,
+        "ratio_vs_qwen35": 1.046,
+        "pct_vs_qwen35": 4.6,
+        "ratio_vs_o200k": 1.156,
+        "pct_vs_o200k": 15.6
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 435,
+        "actual": 435,
+        "match": true
+      }
+    },
+    {
+      "workload": "Rust (BurntSushi/ripgrep searcher/mod.rs)",
       "source_url": "https://raw.githubusercontent.com/BurntSushi/ripgrep/master/crates/searcher/src/searcher/mod.rs",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 7288,
-      "o200k_tokens": 6709,
-      "jev_tokens": 7170,
-      "ratio_vs_qwen35": 0.984,
-      "pct_vs_qwen35": -1.6,
-      "ratio_vs_o200k": 1.069,
-      "pct_vs_o200k": 6.9,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 378,
-      "live_spotcheck_actual": 378,
-      "live_spotcheck_match": true
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 7288,
+        "o200k_tokens": 6709,
+        "jev_tokens": 7170,
+        "ratio_vs_qwen35": 0.984,
+        "pct_vs_qwen35": -1.6,
+        "pct_vs_o200k": 6.9
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 23023,
+        "qwen35_tokens": 5962,
+        "o200k_tokens": 5321,
+        "jev_tokens": 5707,
+        "ratio_vs_qwen35": 0.957,
+        "pct_vs_qwen35": -4.3,
+        "ratio_vs_o200k": 1.073,
+        "pct_vs_o200k": 7.3
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 428,
+        "actual": 428,
+        "match": true
+      }
     },
     {
       "workload": "Python (python/cpython argparse.py)",
-      "kind": "code",
       "source_url": "https://raw.githubusercontent.com/python/cpython/main/Lib/argparse.py",
-      "chars": 30000,
-      "utf8_bytes": 30000,
-      "qwen35_tokens": 6738,
-      "o200k_tokens": 6292,
-      "jev_tokens": 6574,
-      "ratio_vs_qwen35": 0.976,
-      "pct_vs_qwen35": -2.4,
-      "ratio_vs_o200k": 1.045,
-      "pct_vs_o200k": 4.5,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 329,
-      "live_spotcheck_actual": 329,
-      "live_spotcheck_match": true
+      "raw_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6738,
+        "o200k_tokens": 6292,
+        "jev_tokens": 6574,
+        "ratio_vs_qwen35": 0.976,
+        "pct_vs_qwen35": -2.4,
+        "pct_vs_o200k": 4.5
+      },
+      "code_only_no_comments_30kb": {
+        "chars": 30000,
+        "qwen35_tokens": 6798,
+        "o200k_tokens": 6240,
+        "jev_tokens": 6442,
+        "ratio_vs_qwen35": 0.948,
+        "pct_vs_qwen35": -5.2,
+        "ratio_vs_o200k": 1.032,
+        "pct_vs_o200k": 3.2
+      },
+      "live_spotcheck_code_only": {
+        "chars": 1500,
+        "pred": 420,
+        "actual": 420,
+        "match": true
+      }
     }
   ],
   "wikipedia_benchmarks": [
     {
       "workload": "Thai Wikipedia (โลก)",
-      "kind": "wikipedia",
       "source_url": "https://th.wikipedia.org/wiki/โลก",
       "chars": 1099,
       "utf8_bytes": 3099,
@@ -163,14 +366,15 @@
       "pct_vs_qwen35": 266.7,
       "ratio_vs_o200k": 2.357,
       "pct_vs_o200k": 135.7,
-      "live_spotcheck_chars": 1099,
-      "live_spotcheck_pred": 1056,
-      "live_spotcheck_actual": 1056,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1099,
+        "pred": 1056,
+        "actual": 1056,
+        "match": true
+      }
     },
     {
       "workload": "Russian Wikipedia (Земля)",
-      "kind": "wikipedia",
       "source_url": "https://ru.wikipedia.org/wiki/Земля",
       "chars": 8000,
       "utf8_bytes": 14657,
@@ -181,14 +385,15 @@
       "pct_vs_qwen35": 151.4,
       "ratio_vs_o200k": 2.486,
       "pct_vs_o200k": 148.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 984,
-      "live_spotcheck_actual": 984,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 984,
+        "actual": 984,
+        "match": true
+      }
     },
     {
       "workload": "Ukrainian Wikipedia (Земля)",
-      "kind": "wikipedia",
       "source_url": "https://uk.wikipedia.org/wiki/Земля",
       "chars": 8000,
       "utf8_bytes": 14366,
@@ -199,14 +404,15 @@
       "pct_vs_qwen35": 113.1,
       "ratio_vs_o200k": 2.192,
       "pct_vs_o200k": 119.2,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1187,
-      "live_spotcheck_actual": 1187,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1187,
+        "actual": 1187,
+        "match": true
+      }
     },
     {
       "workload": "Arabic Wikipedia (الأرض)",
-      "kind": "wikipedia",
       "source_url": "https://ar.wikipedia.org/wiki/الأرض",
       "chars": 8000,
       "utf8_bytes": 14461,
@@ -217,14 +423,15 @@
       "pct_vs_qwen35": 98.3,
       "ratio_vs_o200k": 1.974,
       "pct_vs_o200k": 97.4,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 917,
-      "live_spotcheck_actual": 917,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 917,
+        "actual": 917,
+        "match": true
+      }
     },
     {
       "workload": "Greek Wikipedia (Γη)",
-      "kind": "wikipedia",
       "source_url": "https://el.wikipedia.org/wiki/Γη",
       "chars": 8000,
       "utf8_bytes": 14336,
@@ -235,14 +442,15 @@
       "pct_vs_qwen35": 83.2,
       "ratio_vs_o200k": 1.906,
       "pct_vs_o200k": 90.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1079,
-      "live_spotcheck_actual": 1079,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1079,
+        "actual": 1079,
+        "match": true
+      }
     },
     {
       "workload": "Japanese Wikipedia (地球)",
-      "kind": "wikipedia",
       "source_url": "https://ja.wikipedia.org/wiki/地球",
       "chars": 8000,
       "utf8_bytes": 21649,
@@ -253,14 +461,15 @@
       "pct_vs_qwen35": 57.7,
       "ratio_vs_o200k": 1.223,
       "pct_vs_o200k": 22.3,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1486,
-      "live_spotcheck_actual": 1486,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1486,
+        "actual": 1486,
+        "match": true
+      }
     },
     {
       "workload": "Chinese (Simplified) Wikipedia (地球)",
-      "kind": "wikipedia",
       "source_url": "https://zh.wikipedia.org/wiki/地球",
       "chars": 8000,
       "utf8_bytes": 22197,
@@ -271,14 +480,15 @@
       "pct_vs_qwen35": 55.4,
       "ratio_vs_o200k": 1.176,
       "pct_vs_o200k": 17.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1533,
-      "live_spotcheck_actual": 1533,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1533,
+        "actual": 1533,
+        "match": true
+      }
     },
     {
       "workload": "Hebrew Wikipedia (כדור הארץ)",
-      "kind": "wikipedia",
       "source_url": "https://he.wikipedia.org/wiki/כדור הארץ",
       "chars": 8000,
       "utf8_bytes": 14023,
@@ -289,14 +499,15 @@
       "pct_vs_qwen35": 53.3,
       "ratio_vs_o200k": 2.0,
       "pct_vs_o200k": 100.0,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1181,
-      "live_spotcheck_actual": 1181,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1181,
+        "actual": 1181,
+        "match": true
+      }
     },
     {
       "workload": "Hindi (Devanagari) Wikipedia (पृथ्वी)",
-      "kind": "wikipedia",
       "source_url": "https://hi.wikipedia.org/wiki/पृथ्वी",
       "chars": 8000,
       "utf8_bytes": 20389,
@@ -307,14 +518,15 @@
       "pct_vs_qwen35": 46.7,
       "ratio_vs_o200k": 1.956,
       "pct_vs_o200k": 95.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 944,
-      "live_spotcheck_actual": 944,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 944,
+        "actual": 944,
+        "match": true
+      }
     },
     {
       "workload": "Korean (Hangul) Wikipedia (지구)",
-      "kind": "wikipedia",
       "source_url": "https://ko.wikipedia.org/wiki/지구",
       "chars": 8000,
       "utf8_bytes": 19007,
@@ -325,14 +537,15 @@
       "pct_vs_qwen35": 37.1,
       "ratio_vs_o200k": 1.193,
       "pct_vs_o200k": 19.3,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 1140,
-      "live_spotcheck_actual": 1140,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 1140,
+        "actual": 1140,
+        "match": true
+      }
     },
     {
       "workload": "Vietnamese Wikipedia (Trái Đất)",
-      "kind": "wikipedia",
       "source_url": "https://vi.wikipedia.org/wiki/Trái Đất",
       "chars": 8000,
       "utf8_bytes": 10689,
@@ -343,14 +556,15 @@
       "pct_vs_qwen35": 26.4,
       "ratio_vs_o200k": 1.112,
       "pct_vs_o200k": 11.2,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 491,
-      "live_spotcheck_actual": 491,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 491,
+        "actual": 491,
+        "match": true
+      }
     },
     {
       "workload": "Czech Wikipedia (Země)",
-      "kind": "wikipedia",
       "source_url": "https://cs.wikipedia.org/wiki/Země",
       "chars": 8000,
       "utf8_bytes": 8933,
@@ -361,14 +575,15 @@
       "pct_vs_qwen35": 25.3,
       "ratio_vs_o200k": 1.246,
       "pct_vs_o200k": 24.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 630,
-      "live_spotcheck_actual": 630,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 630,
+        "actual": 630,
+        "match": true
+      }
     },
     {
       "workload": "Polish Wikipedia (Ziemia)",
-      "kind": "wikipedia",
       "source_url": "https://pl.wikipedia.org/wiki/Ziemia",
       "chars": 8000,
       "utf8_bytes": 8487,
@@ -379,14 +594,15 @@
       "pct_vs_qwen35": 22.3,
       "ratio_vs_o200k": 1.151,
       "pct_vs_o200k": 15.1,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 568,
-      "live_spotcheck_actual": 568,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 568,
+        "actual": 568,
+        "match": true
+      }
     },
     {
       "workload": "Turkish Wikipedia (Dünya)",
-      "kind": "wikipedia",
       "source_url": "https://tr.wikipedia.org/wiki/Dünya",
       "chars": 8000,
       "utf8_bytes": 8855,
@@ -397,14 +613,15 @@
       "pct_vs_qwen35": 21.7,
       "ratio_vs_o200k": 1.276,
       "pct_vs_o200k": 27.6,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 559,
-      "live_spotcheck_actual": 559,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 559,
+        "actual": 559,
+        "match": true
+      }
     },
     {
       "workload": "German Wikipedia (Erde)",
-      "kind": "wikipedia",
       "source_url": "https://de.wikipedia.org/wiki/Erde",
       "chars": 8000,
       "utf8_bytes": 8133,
@@ -415,14 +632,15 @@
       "pct_vs_qwen35": 7.2,
       "ratio_vs_o200k": 1.129,
       "pct_vs_o200k": 12.9,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 405,
-      "live_spotcheck_actual": 405,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 405,
+        "actual": 405,
+        "match": true
+      }
     },
     {
       "workload": "English Wikipedia (Earth)",
-      "kind": "wikipedia",
       "source_url": "https://en.wikipedia.org/wiki/Earth",
       "chars": 8000,
       "utf8_bytes": 8031,
@@ -433,10 +651,12 @@
       "pct_vs_qwen35": 1.6,
       "ratio_vs_o200k": 1.059,
       "pct_vs_o200k": 5.9,
-      "live_spotcheck_chars": 1500,
-      "live_spotcheck_pred": 303,
-      "live_spotcheck_actual": 303,
-      "live_spotcheck_match": true
+      "live_spotcheck": {
+        "chars": 1500,
+        "pred": 303,
+        "actual": 303,
+        "match": true
+      }
     }
   ]
 }
