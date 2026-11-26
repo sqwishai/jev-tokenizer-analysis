@@ -1,0 +1,910 @@
+{
+  "timestamp_utc": "2026-11-26T17:08:58.398038+00:00",
+  "formula": "2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)",
+  "dimension_bounds_px": {
+    "min_side": 280,
+    "max_side": 1568
+  },
+  "summary": {
+    "resolution_probes_matched": 22,
+    "resolution_probes_total": 22,
+    "bound_probes_matched": 8,
+    "bound_probes_total": 8,
+    "variant_probes_matched": 10,
+    "variant_probes_total": 10,
+    "openrouter_inline_512_overhead_vs_short_key": 32,
+    "constant_probes_matched": 9,
+    "constant_probes_total": 9,
+    "jev113_vs_jev114_matched": 20,
+    "jev113_vs_jev114_total": 20,
+    "openrouter_vs_typesafe_tested": true,
+    "openrouter_vs_typesafe_matched": 21,
+    "openrouter_vs_typesafe_total": 21
+  },
+  "resolution_probes": [
+    {
+      "width": 280,
+      "height": 280,
+      "ceil_w_28": 10,
+      "ceil_h_28": 10,
+      "live_image_tokens_incl_key": 203,
+      "predicted_image_tokens_incl_key": 203,
+      "match": true,
+      "live_visual_tokens_excl_key": 202,
+      "qwen35_native_tokens": 83,
+      "ratio_vs_qwen35": 2.434
+    },
+    {
+      "width": 320,
+      "height": 320,
+      "ceil_w_28": 12,
+      "ceil_h_28": 12,
+      "live_image_tokens_incl_key": 291,
+      "predicted_image_tokens_incl_key": 291,
+      "match": true,
+      "live_visual_tokens_excl_key": 290,
+      "qwen35_native_tokens": 102,
+      "ratio_vs_qwen35": 2.843
+    },
+    {
+      "width": 384,
+      "height": 384,
+      "ceil_w_28": 14,
+      "ceil_h_28": 14,
+      "live_image_tokens_incl_key": 395,
+      "predicted_image_tokens_incl_key": 395,
+      "match": true,
+      "live_visual_tokens_excl_key": 394,
+      "qwen35_native_tokens": 146,
+      "ratio_vs_qwen35": 2.699
+    },
+    {
+      "width": 448,
+      "height": 448,
+      "ceil_w_28": 16,
+      "ceil_h_28": 16,
+      "live_image_tokens_incl_key": 515,
+      "predicted_image_tokens_incl_key": 515,
+      "match": true,
+      "live_visual_tokens_excl_key": 514,
+      "qwen35_native_tokens": 198,
+      "ratio_vs_qwen35": 2.596
+    },
+    {
+      "width": 503,
+      "height": 512,
+      "ceil_w_28": 18,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 687,
+      "predicted_image_tokens_incl_key": 687,
+      "match": true,
+      "live_visual_tokens_excl_key": 686,
+      "qwen35_native_tokens": 258,
+      "ratio_vs_qwen35": 2.659
+    },
+    {
+      "width": 504,
+      "height": 512,
+      "ceil_w_28": 18,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 687,
+      "predicted_image_tokens_incl_key": 687,
+      "match": true,
+      "live_visual_tokens_excl_key": 686,
+      "qwen35_native_tokens": 258,
+      "ratio_vs_qwen35": 2.659
+    },
+    {
+      "width": 505,
+      "height": 512,
+      "ceil_w_28": 19,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 725,
+      "predicted_image_tokens_incl_key": 725,
+      "match": true,
+      "live_visual_tokens_excl_key": 724,
+      "qwen35_native_tokens": 258,
+      "ratio_vs_qwen35": 2.806
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "ceil_w_28": 19,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 725,
+      "predicted_image_tokens_incl_key": 725,
+      "match": true,
+      "live_visual_tokens_excl_key": 724,
+      "qwen35_native_tokens": 258,
+      "ratio_vs_qwen35": 2.806
+    },
+    {
+      "width": 532,
+      "height": 512,
+      "ceil_w_28": 19,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 725,
+      "predicted_image_tokens_incl_key": 725,
+      "match": true,
+      "live_visual_tokens_excl_key": 724,
+      "qwen35_native_tokens": 274,
+      "ratio_vs_qwen35": 2.642
+    },
+    {
+      "width": 533,
+      "height": 512,
+      "ceil_w_28": 20,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 763,
+      "predicted_image_tokens_incl_key": 763,
+      "match": true,
+      "live_visual_tokens_excl_key": 762,
+      "qwen35_native_tokens": 274,
+      "ratio_vs_qwen35": 2.781
+    },
+    {
+      "width": 640,
+      "height": 480,
+      "ceil_w_28": 23,
+      "ceil_h_28": 18,
+      "live_image_tokens_incl_key": 831,
+      "predicted_image_tokens_incl_key": 831,
+      "match": true,
+      "live_visual_tokens_excl_key": 830,
+      "qwen35_native_tokens": 302,
+      "ratio_vs_qwen35": 2.748
+    },
+    {
+      "width": 768,
+      "height": 768,
+      "ceil_w_28": 28,
+      "ceil_h_28": 28,
+      "live_image_tokens_incl_key": 1571,
+      "predicted_image_tokens_incl_key": 1571,
+      "match": true,
+      "live_visual_tokens_excl_key": 1570,
+      "qwen35_native_tokens": 578,
+      "ratio_vs_qwen35": 2.716
+    },
+    {
+      "width": 800,
+      "height": 600,
+      "ceil_w_28": 29,
+      "ceil_h_28": 22,
+      "live_image_tokens_incl_key": 1279,
+      "predicted_image_tokens_incl_key": 1279,
+      "match": true,
+      "live_visual_tokens_excl_key": 1278,
+      "qwen35_native_tokens": 477,
+      "ratio_vs_qwen35": 2.679
+    },
+    {
+      "width": 1024,
+      "height": 512,
+      "ceil_w_28": 37,
+      "ceil_h_28": 19,
+      "live_image_tokens_incl_key": 1409,
+      "predicted_image_tokens_incl_key": 1409,
+      "match": true,
+      "live_visual_tokens_excl_key": 1408,
+      "qwen35_native_tokens": 514,
+      "ratio_vs_qwen35": 2.739
+    },
+    {
+      "width": 1024,
+      "height": 1024,
+      "ceil_w_28": 37,
+      "ceil_h_28": 37,
+      "live_image_tokens_incl_key": 2741,
+      "predicted_image_tokens_incl_key": 2741,
+      "match": true,
+      "live_visual_tokens_excl_key": 2740,
+      "qwen35_native_tokens": 1026,
+      "ratio_vs_qwen35": 2.671
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "ceil_w_28": 46,
+      "ceil_h_28": 26,
+      "live_image_tokens_incl_key": 2395,
+      "predicted_image_tokens_incl_key": 2395,
+      "match": true,
+      "live_visual_tokens_excl_key": 2394,
+      "qwen35_native_tokens": 882,
+      "ratio_vs_qwen35": 2.714
+    },
+    {
+      "width": 1536,
+      "height": 1536,
+      "ceil_w_28": 55,
+      "ceil_h_28": 55,
+      "live_image_tokens_incl_key": 6053,
+      "predicted_image_tokens_incl_key": 6053,
+      "match": true,
+      "live_visual_tokens_excl_key": 6052,
+      "qwen35_native_tokens": 2306,
+      "ratio_vs_qwen35": 2.624
+    },
+    {
+      "width": 1540,
+      "height": 280,
+      "ceil_w_28": 55,
+      "ceil_h_28": 10,
+      "live_image_tokens_incl_key": 1103,
+      "predicted_image_tokens_incl_key": 1103,
+      "match": true,
+      "live_visual_tokens_excl_key": 1102,
+      "qwen35_native_tokens": 434,
+      "ratio_vs_qwen35": 2.539
+    },
+    {
+      "width": 1541,
+      "height": 280,
+      "ceil_w_28": 56,
+      "ceil_h_28": 10,
+      "live_image_tokens_incl_key": 1123,
+      "predicted_image_tokens_incl_key": 1123,
+      "match": true,
+      "live_visual_tokens_excl_key": 1122,
+      "qwen35_native_tokens": 434,
+      "ratio_vs_qwen35": 2.585
+    },
+    {
+      "width": 1568,
+      "height": 280,
+      "ceil_w_28": 56,
+      "ceil_h_28": 10,
+      "live_image_tokens_incl_key": 1123,
+      "predicted_image_tokens_incl_key": 1123,
+      "match": true,
+      "live_visual_tokens_excl_key": 1122,
+      "qwen35_native_tokens": 443,
+      "ratio_vs_qwen35": 2.533
+    },
+    {
+      "width": 280,
+      "height": 1568,
+      "ceil_w_28": 10,
+      "ceil_h_28": 56,
+      "live_image_tokens_incl_key": 1123,
+      "predicted_image_tokens_incl_key": 1123,
+      "match": true,
+      "live_visual_tokens_excl_key": 1122,
+      "qwen35_native_tokens": 443,
+      "ratio_vs_qwen35": 2.533
+    },
+    {
+      "width": 1568,
+      "height": 1568,
+      "ceil_w_28": 56,
+      "ceil_h_28": 56,
+      "live_image_tokens_incl_key": 6275,
+      "predicted_image_tokens_incl_key": 6275,
+      "match": true,
+      "live_visual_tokens_excl_key": 6274,
+      "qwen35_native_tokens": 2403,
+      "ratio_vs_qwen35": 2.611
+    }
+  ],
+  "dimension_bound_probes": [
+    {
+      "width": 279,
+      "height": 280,
+      "expected_ok": false,
+      "actual_ok": false,
+      "status": 400,
+      "match": true
+    },
+    {
+      "width": 280,
+      "height": 279,
+      "expected_ok": false,
+      "actual_ok": false,
+      "status": 400,
+      "match": true
+    },
+    {
+      "width": 280,
+      "height": 280,
+      "expected_ok": true,
+      "actual_ok": true,
+      "status": 200,
+      "match": true
+    },
+    {
+      "width": 1568,
+      "height": 280,
+      "expected_ok": true,
+      "actual_ok": true,
+      "status": 200,
+      "match": true
+    },
+    {
+      "width": 280,
+      "height": 1568,
+      "expected_ok": true,
+      "actual_ok": true,
+      "status": 200,
+      "match": true
+    },
+    {
+      "width": 1569,
+      "height": 280,
+      "expected_ok": false,
+      "actual_ok": false,
+      "status": 400,
+      "match": true
+    },
+    {
+      "width": 280,
+      "height": 1569,
+      "expected_ok": false,
+      "actual_ok": false,
+      "status": 400,
+      "match": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "expected_ok": false,
+      "actual_ok": false,
+      "status": 400,
+      "match": true
+    }
+  ],
+  "variant_probes": [
+    {
+      "name": "key_a_T1_280",
+      "live_input_tokens": 470,
+      "expected_input_tokens": 470,
+      "match": true
+    },
+    {
+      "name": "key_img1_T2_280",
+      "live_input_tokens": 471,
+      "expected_input_tokens": 471,
+      "match": true
+    },
+    {
+      "name": "key_JavaScript_T5_280",
+      "live_input_tokens": 474,
+      "expected_input_tokens": 474,
+      "match": true
+    },
+    {
+      "name": "key_uuid_T35_512",
+      "live_input_tokens": 1026,
+      "expected_input_tokens": 1026,
+      "match": true
+    },
+    {
+      "name": "512_png_solid",
+      "live_input_tokens": 992,
+      "expected_input_tokens": 992,
+      "match": true
+    },
+    {
+      "name": "512_jpg_solid",
+      "live_input_tokens": 992,
+      "expected_input_tokens": 992,
+      "match": true
+    },
+    {
+      "name": "512_png_noise",
+      "live_input_tokens": 992,
+      "expected_input_tokens": 992,
+      "match": true
+    },
+    {
+      "name": "512_in_instructions",
+      "live_input_tokens": 992,
+      "expected_input_tokens": 992,
+      "match": true
+    },
+    {
+      "name": "512_box_question",
+      "live_input_tokens": 992,
+      "expected_input_tokens": 992,
+      "match": true
+    },
+    {
+      "name": "512_referenced_twice_in_array",
+      "live_input_tokens": 1722,
+      "expected_input_tokens": 1722,
+      "match": true
+    }
+  ],
+  "openrouter_inline_512": {
+    "live_input_tokens": 1024,
+    "short_key_a_input_tokens": 992,
+    "extra_tokens_from_uuid_and_array": 32
+  },
+  "billing_constant_probes": [
+    {
+      "name": "1_noul_instr_x",
+      "live_input_tokens": 267,
+      "expected_input_tokens": 267,
+      "live_output_tokens": 20,
+      "expected_output_tokens": 20,
+      "match": true
+    },
+    {
+      "name": "2_noul_instr_x",
+      "live_input_tokens": 275,
+      "expected_input_tokens": 275,
+      "live_output_tokens": 36,
+      "expected_output_tokens": 36,
+      "match": true
+    },
+    {
+      "name": "3_noul_instr_x",
+      "live_input_tokens": 283,
+      "expected_input_tokens": 283,
+      "live_output_tokens": 52,
+      "expected_output_tokens": 52,
+      "match": true
+    },
+    {
+      "name": "1_box_empty_instr",
+      "live_input_tokens": 266,
+      "expected_input_tokens": 266,
+      "live_output_tokens": 20,
+      "expected_output_tokens": 20,
+      "match": true
+    },
+    {
+      "name": "1_choice_2opt_nodesc",
+      "live_input_tokens": 282,
+      "expected_input_tokens": 282,
+      "live_output_tokens": 31,
+      "expected_output_tokens": 31,
+      "match": true
+    },
+    {
+      "name": "1_choice_3opt_nodesc",
+      "live_input_tokens": 288,
+      "expected_input_tokens": 288,
+      "live_output_tokens": 38,
+      "expected_output_tokens": 38,
+      "match": true
+    },
+    {
+      "name": "1_choice_2opt_desc",
+      "live_input_tokens": 300,
+      "expected_input_tokens": 300,
+      "live_output_tokens": 31,
+      "expected_output_tokens": 31,
+      "match": true
+    },
+    {
+      "name": "1_score_2lvl",
+      "live_input_tokens": 284,
+      "expected_input_tokens": 284,
+      "live_output_tokens": 17,
+      "expected_output_tokens": 17,
+      "match": true
+    },
+    {
+      "name": "1_score_3lvl",
+      "live_input_tokens": 290,
+      "expected_input_tokens": 290,
+      "live_output_tokens": 17,
+      "expected_output_tokens": 17,
+      "match": true
+    }
+  ],
+  "parity_probes": [
+    {
+      "name": "text_JavaScript",
+      "openrouter_jev113": [
+        "OK",
+        272,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        272,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        272,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_123456",
+      "openrouter_jev113": [
+        "OK",
+        273,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        273,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        273,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_nfd_nfc",
+      "openrouter_jev113": [
+        "OK",
+        272,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        272,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        272,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_yarakat",
+      "openrouter_jev113": [
+        "OK",
+        269,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        269,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        269,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_icientsxyz",
+      "openrouter_jev113": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_ierendenxyz",
+      "openrouter_jev113": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_avoqxyz",
+      "openrouter_jev113": [
+        "OK",
+        269,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        269,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        269,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_GMMEA",
+      "openrouter_jev113": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        270,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_czech",
+      "openrouter_jev113": [
+        "OK",
+        286,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        286,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        286,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "text_russian",
+      "openrouter_jev113": [
+        "OK",
+        285,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        285,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        285,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "frame_2noul_out",
+      "openrouter_jev113": [
+        "OK",
+        275,
+        42
+      ],
+      "openrouter_jev114": [
+        "OK",
+        275,
+        42
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        275,
+        42
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "frame_choice_desc",
+      "openrouter_jev113": [
+        "OK",
+        318,
+        31
+      ],
+      "openrouter_jev114": [
+        "OK",
+        318,
+        31
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        318,
+        31
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "frame_score",
+      "openrouter_jev113": [
+        "OK",
+        292,
+        17
+      ],
+      "openrouter_jev114": [
+        "OK",
+        292,
+        17
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        292,
+        17
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_280_key_a",
+      "openrouter_jev113": [
+        "OK",
+        470,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        470,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        470,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_280_key_JS",
+      "openrouter_jev113": [
+        "OK",
+        474,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        474,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        474,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_504x512",
+      "openrouter_jev113": [
+        "OK",
+        954,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        954,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        954,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_505x512",
+      "openrouter_jev113": [
+        "OK",
+        992,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        992,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        992,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_1568x1568",
+      "openrouter_jev113": [
+        "OK",
+        6542,
+        20
+      ],
+      "openrouter_jev114": [
+        "OK",
+        6542,
+        20
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "OK",
+        6542,
+        20
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_err_279x280",
+      "openrouter_jev113": [
+        "ERR",
+        400
+      ],
+      "openrouter_jev114": [
+        "ERR",
+        400
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "ERR",
+        400
+      ],
+      "openrouter_eq_typesafe": true
+    },
+    {
+      "name": "img_err_1569x280",
+      "openrouter_jev113": [
+        "ERR",
+        400
+      ],
+      "openrouter_jev114": [
+        "ERR",
+        400
+      ],
+      "jev113_eq_jev114": true,
+      "direct_typesafe_jev114": [
+        "ERR",
+        400
+      ],
+      "openrouter_eq_typesafe": true
+    }
+  ],
+  "box_version_and_endpoint_check": {
+    "openrouter_jev113": [
+      "ERR",
+      400
+    ],
+    "openrouter_jev114": [
+      "OK",
+      268,
+      20
+    ],
+    "direct_typesafe_jev114": [
+      "OK",
+      268,
+      20
+    ],
+    "openrouter_eq_typesafe": true
+  }
+}

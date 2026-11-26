@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import unicodedata
 from pathlib import Path
 from typing import Iterable
@@ -108,6 +109,13 @@ class JevBillingTokenizer:
 
     def count(self, text: str) -> int:
         return len(self.encode_pieces(text))
+
+    def count_image(self, width: int, height: int, asset_key: str = "") -> int:
+        if not (280 <= width <= 1568 and 280 <= height <= 1568):
+            raise ValueError(f"Jev requires 280 <= width, height <= 1568 (got {width}x{height})")
+        patches = math.ceil(width / 28) * math.ceil(height / 28)
+        key_tokens = self.count(asset_key) if asset_key else 0
+        return 2 + key_tokens + 2 * patches
 
     def encode_many(self, texts: Iterable[str]) -> list[list[bytes]]:
         return [self.encode_pieces(t) for t in texts]
