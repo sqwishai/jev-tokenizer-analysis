@@ -1,0 +1,16 @@
+[project]
+name = "jev-tokenizer-analysis"
+version = "0.1.0"
+description = "Exact reverse engineering, full-vocabulary verification, and Occam's razor root-cause analysis of TypeSafe Jev's billing tokenizer."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "huggingface-hub>=0.25.0",
+    "regex>=2024.0.0",
+    "requests>=2.32.0",
+    "tiktoken>=0.8.0",
+    "tokenizers>=0.20.0",
+]
+
+[tool.uv]
+package = false

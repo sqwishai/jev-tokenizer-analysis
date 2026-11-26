@@ -1,0 +1,1222 @@
+{
+  "timestamp_utc": "2026-11-26T16:27:32.657260+00:00",
+  "endpoint": "https://openrouter.ai/api/alpha/decisions",
+  "resolved_latest_model": "typesafe/jev-1.14-20261014",
+  "summary": {
+    "state_probes_total": 71,
+    "state_probes_matched": 71,
+    "output_token_probes_total": 11,
+    "output_token_probes_matched": 11,
+    "instructions_JavaScript_tokens": 5,
+    "version_checks_all_match": true
+  },
+  "state_probes": [
+    {
+      "category": "baseline",
+      "text": "hello",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'hello'"
+      ],
+      "note": "In o200k & Qwen; all substrings of 'hell' in Qwen"
+    },
+    {
+      "category": "baseline",
+      "text": "helloworld",
+      "live_jev": 4,
+      "predicted_jev": 4,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'hell'",
+        "b'ow'",
+        "b'or'",
+        "b'ld'"
+      ],
+      "note": "Misses Pass 1; 'orld' blocked by missing 'orl'"
+    },
+    {
+      "category": "baseline",
+      "text": "JavaScript",
+      "live_jev": 5,
+      "predicted_jev": 5,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'J'",
+        "b'ava'",
+        "b'S'",
+        "b'crip'",
+        "b't'"
+      ],
+      "note": "Qwen keeps 1 chunk; Pass 2 splits J|ava|S|crip|t"
+    },
+    {
+      "category": "baseline",
+      "text": "Příliš žlutý člun minul třetí bóji.",
+      "live_jev": 19,
+      "predicted_jev": 19,
+      "match": true,
+      "qwen35": 14,
+      "o200k": 15,
+      "predicted_pieces_repr": [
+        "b'P'",
+        "b'\\xc5\\x99'",
+        "b'\\xc3\\xad'",
+        "b'li'",
+        "b'\\xc5\\xa1'",
+        "b' \\xc5\\xbe'",
+        "b'lut'",
+        "b'\\xc3\\xbd'",
+        "b' \\xc4\\x8dl'",
+        "b'un'",
+        "b' minul'",
+        "b' t'",
+        "b'\\xc5\\x99'",
+        "b'et'",
+        "b'\\xc3\\xad'",
+        "b' b'",
+        "b'\\xc3\\xb3'",
+        "b'ji'",
+        "b'.'"
+      ],
+      "note": "Czech diacritics: broken UTF-8 prefixes blocked"
+    },
+    {
+      "category": "pretokenizer",
+      "text": "123456",
+      "live_jev": 6,
+      "predicted_jev": 6,
+      "match": true,
+      "qwen35": 6,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'1'",
+        "b'2'",
+        "b'3'",
+        "b'4'",
+        "b'5'",
+        "b'6'"
+      ],
+      "note": "Qwen \\p{N} splits single digits (6) vs o200k \\p{N}{1,3} (2)"
+    },
+    {
+      "category": "pretokenizer",
+      "text": "don't won't I've we're",
+      "live_jev": 8,
+      "predicted_jev": 8,
+      "match": true,
+      "qwen35": 8,
+      "o200k": 4,
+      "predicted_pieces_repr": [
+        "b'don'",
+        "b\"'t\"",
+        "b' won'",
+        "b\"'t\"",
+        "b' I'",
+        "b\"'ve\"",
+        "b' we'",
+        "b\"'re\""
+      ],
+      "note": "Qwen contraction splitting (8) vs o200k (4)"
+    },
+    {
+      "category": "normalization",
+      "text": "café",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'caf'",
+        "b'\\xc3\\xa9'"
+      ],
+      "note": "NFC precomposed"
+    },
+    {
+      "category": "normalization",
+      "text": "café",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'caf'",
+        "b'\\xc3\\xa9'"
+      ],
+      "note": "NFD decomposed normalizes to NFC (2, not o200k's 3)"
+    },
+    {
+      "category": "normalization",
+      "text": "ﬁle",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'\\xef\\xac'",
+        "b'\\x81'",
+        "b'le'"
+      ],
+      "note": "NFC (not NFKC): fi-ligature does not fold to 'fi'"
+    },
+    {
+      "category": "special_tokens",
+      "text": "a <|endoftext|> b",
+      "live_jev": 9,
+      "predicted_jev": 9,
+      "match": true,
+      "qwen35": 4,
+      "o200k": 9,
+      "predicted_pieces_repr": [
+        "b'a'",
+        "b' <'",
+        "b'|'",
+        "b'end'",
+        "b'of'",
+        "b'text'",
+        "b'|'",
+        "b'>'",
+        "b' b'"
+      ],
+      "note": "Special tokens treated as ordinary text"
+    },
+    {
+      "category": "special_tokens",
+      "text": "a <|im_start|> b",
+      "live_jev": 8,
+      "predicted_jev": 8,
+      "match": true,
+      "qwen35": 4,
+      "o200k": 8,
+      "predicted_pieces_repr": [
+        "b'a'",
+        "b' <'",
+        "b'|'",
+        "b'im'",
+        "b'_start'",
+        "b'|'",
+        "b'>'",
+        "b' b'"
+      ],
+      "note": "Qwen chat tokens treated as ordinary text"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "Java",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'Java'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'Jav'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "Script",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'Script'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'Scrip'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "inqu",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'inqu'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'nq'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "errors",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'errors'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'rro'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "icients",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'icients'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'cien'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "ierenden",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'ierenden'"
+      ],
+      "note": "Standalone in o200k & Qwen -> 1 despite missing 'erend'"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "pload",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'pload'"
+      ],
+      "note": "Qwen 3.5 extended vocab (ID 192,153) passes Pass 1"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "aaaaaaaa",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'aaaaaaaa'"
+      ],
+      "note": "8x 'a' passes Pass 1 -> 1"
+    },
+    {
+      "category": "pass1_lookup",
+      "text": "aaaaaaaaa",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'aaaa'",
+        "b'aaaa'",
+        "b'a'"
+      ],
+      "note": "9x 'a' misses Pass 1; 8x 'a' blocked in Pass 2 -> 3"
+    },
+    {
+      "category": "pass1_reject_non_qwen",
+      "text": "oworld",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'ow'",
+        "b'or'",
+        "b'ld'"
+      ],
+      "note": "In o200k, NOT in Qwen -> fails Pass 1 -> 3 (ow|or|ld)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": "yarakat",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'yar'",
+        "b'akat'"
+      ],
+      "note": "In o200k & q_vocab, NOT in q_merges -> fails Pass 1 -> 2 (Qwen=3)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": " terdapat",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b' terd'",
+        "b'apat'"
+      ],
+      "note": "In o200k & q_vocab, NOT in q_merges -> fails Pass 1 -> 2 (Qwen=3)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": " dikkat",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b' dikk'",
+        "b'at'"
+      ],
+      "note": "In o200k & q_vocab, NOT in q_merges -> fails Pass 1 -> 2 (Qwen=3)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": " факт",
+      "live_jev": 4,
+      "predicted_jev": 4,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b' \\xd1\\x84'",
+        "b'\\xd0\\xb0'",
+        "b'\\xd0\\xba'",
+        "b'\\xd1\\x82'"
+      ],
+      "note": "In o200k & q_vocab, NOT in q_merges -> fails Pass 1 -> 4 (Qwen=3)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": "матри",
+      "live_jev": 5,
+      "predicted_jev": 5,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'\\xd0\\xbc'",
+        "b'\\xd0\\xb0'",
+        "b'\\xd1\\x82'",
+        "b'\\xd1\\x80'",
+        "b'\\xd0\\xb8'"
+      ],
+      "note": "In o200k & q_vocab, NOT in q_merges -> fails Pass 1 -> 5 (Qwen=3)"
+    },
+    {
+      "category": "pass1_reject_mergeless",
+      "text": "加拿大",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'\\xe5\\x8a\\xa0'",
+        "b'\\xe6\\x8b\\xbf'",
+        "b'\\xe5\\xa4\\xa7'"
+      ],
+      "note": "In o200k & q_vocab (ID 108,918 < 151k), NOT in q_merges -> 3"
+    },
+    {
+      "category": "pass2_strict_prefix_missing",
+      "text": "Btnxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'B'",
+        "b'tn'",
+        "b'xyz'"
+      ],
+      "note": "3-byte 'Btn': missing [0:2]='Bt' blocks merge"
+    },
+    {
+      "category": "pass2_strict_prefix_missing",
+      "text": "createxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'cre'",
+        "b'ate'",
+        "b'xyz'"
+      ],
+      "note": "Missing prefix 'crea' blocks 'create'"
+    },
+    {
+      "category": "pass2_strict_prefix_missing",
+      "text": "thingxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'th'",
+        "b'ing'",
+        "b'xyz'"
+      ],
+      "note": "Missing prefix 'thi' blocks 'thing'"
+    },
+    {
+      "category": "pass2_strict_prefix_missing",
+      "text": "Eventxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'E'",
+        "b'vent'",
+        "b'xyz'"
+      ],
+      "note": "Missing prefix 'Eve' blocks 'Event'"
+    },
+    {
+      "category": "pass2_cand_minus_1_missing",
+      "text": "Javaxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'J'",
+        "b'ava'",
+        "b'xyz'"
+      ],
+      "note": "Missing cand[:-1]='Jav' blocks 'Java'"
+    },
+    {
+      "category": "pass2_suffix_of_m1_missing",
+      "text": "inquxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'in'",
+        "b'qu'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing substring [1:3]='nq' blocks 'inqu'"
+    },
+    {
+      "category": "pass2_suffix_of_m1_missing",
+      "text": "errorxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'err'",
+        "b'or'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing substring [1:4]='rro' blocks 'error'"
+    },
+    {
+      "category": "pass2_suffix_of_m1_missing",
+      "text": "orderxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ord'",
+        "b'er'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing substring [1:4]='rde' blocks 'order'"
+    },
+    {
+      "category": "pass2_suffix_of_m1_missing",
+      "text": " minulxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b' min'",
+        "b'ul'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing substring [1:5]='minu' blocks ' minul'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "errorsxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'err'",
+        "b'ors'",
+        "b'xyz'"
+      ],
+      "note": "All prefixes & suffixes of 'error' in Q; sole missing [1:4]='rro'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "weightsxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'we'",
+        "b'ights'",
+        "b'xyz'"
+      ],
+      "note": "All prefixes & suffixes of 'weight' in Q; missing 'eig','eigh'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "indicesxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ind'",
+        "b'ices'",
+        "b'xyz'"
+      ],
+      "note": "All prefixes & suffixes of 'indice' in Q; missing 'ndi','ndic'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "icientsxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ic'",
+        "b'ients'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing 4-byte interior [1:5]='cien' blocks 'icients'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "isticalxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ist'",
+        "b'ical'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing 4-byte interior [1:5]='stic' blocks 'istical'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "adressexyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ad'",
+        "b'resse'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing 4-byte interior [1:5]='dres' blocks 'adresse'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "ierendenxyz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ier'",
+        "b'enden'",
+        "b'xyz'"
+      ],
+      "note": "Sole missing 5-byte interior [1:6]='erend' blocks 'ierenden'"
+    },
+    {
+      "category": "pass2_strict_interior_missing",
+      "text": "😀😃",
+      "live_jev": 4,
+      "predicted_jev": 4,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'\\xf0\\x9f\\x98'",
+        "b'\\x80'",
+        "b'\\xf0\\x9f\\x98'",
+        "b'\\x83'"
+      ],
+      "note": "4-byte emoji blocked by missing middle bytes \\x9f\\x98"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "oqxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'oq'",
+        "b'xyz'"
+      ],
+      "note": "2-byte 'oq' NOT in Qwen -> allowed (last byte skipped)"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "poqxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'poq'",
+        "b'xyz'"
+      ],
+      "note": "3-byte 'poq': 'oq','poq' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "avoqxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'avoq'",
+        "b'xyz'"
+      ],
+      "note": "4-byte 'avoq': 'oq','voq','avoq' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "KEYxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'KEY'",
+        "b'xyz'"
+      ],
+      "note": "3-byte 'KEY': [1:3]='EY' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "aluexyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'alue'",
+        "b'xyz'"
+      ],
+      "note": "4-byte 'alue': [1:4]='lue' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "ondayxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'onday'",
+        "b'xyz'"
+      ],
+      "note": "5-byte 'onday': 'nday','onday' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "scribxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'scrib'",
+        "b'xyz'"
+      ],
+      "note": "Right child 'crib' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "girlsxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'girls'",
+        "b'xyz'"
+      ],
+      "note": "Right child 'irls' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "asoqxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'asoq'",
+        "b'xyz'"
+      ],
+      "note": "Right child 'oq' NOT in Qwen -> allowed"
+    },
+    {
+      "category": "pass2_last_byte_ignored",
+      "text": "abab",
+      "live_jev": 1,
+      "predicted_jev": 1,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 1,
+      "predicted_pieces_repr": [
+        "b'abab'"
+      ],
+      "note": "Not in Qwen; all substrings of 'aba' in Qwen -> 1"
+    },
+    {
+      "category": "pass2_o200k_only",
+      "text": "olum",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ol'",
+        "b'um'"
+      ],
+      "note": "In Qwen & sub_ok, NOT in o200k -> does not merge (2)"
+    },
+    {
+      "category": "pass2_o200k_only",
+      "text": "olumn",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 1,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ol'",
+        "b'umn'"
+      ],
+      "note": "In Qwen & sub_ok, NOT in o200k -> does not merge (2)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "GMMEA",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'G'",
+        "b'MM'",
+        "b'EA'"
+      ],
+      "note": "o200k rank order (3) vs Qwen rank / longest (2)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "oaudel",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'oa'",
+        "b'udel'"
+      ],
+      "note": "o200k rank order (2) vs Qwen rank (3)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "romehen",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'rome'",
+        "b'hen'"
+      ],
+      "note": "o200k rank order (2) vs Qwen rank (3)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "Latetud",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'Lat'",
+        "b'etud'"
+      ],
+      "note": "o200k rank order (2) vs longest-first (3)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "ohicji",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'oh'",
+        "b'ic'",
+        "b'ji'"
+      ],
+      "note": "o200k rank order (3) vs longest-first (2)"
+    },
+    {
+      "category": "pass2_o200k_rank_order",
+      "text": "Locksviz",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'Lock'",
+        "b'sv'",
+        "b'iz'"
+      ],
+      "note": "o200k rank order (3) vs longest-first (2)"
+    },
+    {
+      "category": "pass2_qwen35_extended_vocab",
+      "text": "ationxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'ation'",
+        "b'xyz'"
+      ],
+      "note": "Needs Qwen 3.5 'tio' (ID 179,293 > 151,936)"
+    },
+    {
+      "category": "pass2_qwen35_extended_vocab",
+      "text": "tringxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'tring'",
+        "b'xyz'"
+      ],
+      "note": "Needs Qwen 3.5 'trin' (ID 224,604 > 151,936)"
+    },
+    {
+      "category": "pass2_qwen35_extended_vocab",
+      "text": "lementsxyz",
+      "live_jev": 2,
+      "predicted_jev": 2,
+      "match": true,
+      "qwen35": 2,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'lements'",
+        "b'xyz'"
+      ],
+      "note": "7-byte token with all substrings of 'lement' in Qwen -> 2"
+    },
+    {
+      "category": "pass2_locality",
+      "text": "Javaonday",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'J'",
+        "b'ava'",
+        "b'onday'"
+      ],
+      "note": "Blocked 'Java' does not prevent 'onday' in same chunk -> 3"
+    },
+    {
+      "category": "pass2_locality",
+      "text": "ondayJava",
+      "live_jev": 3,
+      "predicted_jev": 3,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 2,
+      "predicted_pieces_repr": [
+        "b'onday'",
+        "b'J'",
+        "b'ava'"
+      ],
+      "note": "Allowed 'onday' does not unblock 'Java' in same chunk -> 3"
+    },
+    {
+      "category": "workload_distortion",
+      "text": "The quick brown fox jumps over the lazy dog",
+      "live_jev": 9,
+      "predicted_jev": 9,
+      "match": true,
+      "qwen35": 9,
+      "o200k": 9,
+      "predicted_pieces_repr": [
+        "b'The'",
+        "b' quick'",
+        "b' brown'",
+        "b' fox'",
+        "b' jumps'",
+        "b' over'",
+        "b' the'",
+        "b' lazy'",
+        "b' dog'"
+      ],
+      "note": "English prose: +0.0% vs Qwen 3.5"
+    },
+    {
+      "category": "workload_distortion",
+      "text": "userProfileController",
+      "live_jev": 6,
+      "predicted_jev": 6,
+      "match": true,
+      "qwen35": 3,
+      "o200k": 3,
+      "predicted_pieces_repr": [
+        "b'user'",
+        "b'Pro'",
+        "b'file'",
+        "b'Cont'",
+        "b'roll'",
+        "b'er'"
+      ],
+      "note": "CamelCase: +100% vs Qwen 3.5"
+    },
+    {
+      "category": "workload_distortion",
+      "text": "Привет мир модели машинного обучения",
+      "live_jev": 18,
+      "predicted_jev": 18,
+      "match": true,
+      "qwen35": 8,
+      "o200k": 7,
+      "predicted_pieces_repr": [
+        "b'\\xd0\\x9f'",
+        "b'\\xd1\\x80'",
+        "b'\\xd0\\xb8'",
+        "b'\\xd0\\xb2'",
+        "b'\\xd0\\xb5'",
+        "b'\\xd1\\x82'",
+        "b' \\xd0\\xbc\\xd0\\xb8\\xd1\\x80'",
+        "b' \\xd0\\xbc\\xd0\\xbe\\xd0\\xb4\\xd0\\xb5\\xd0\\xbb\\xd0\\xb8'",
+        "b' \\xd0\\xbc'",
+        "b'\\xd0\\xb0'",
+        "b'\\xd1\\x88'",
+        "b'\\xd0\\xb8'",
+        "b'\\xd0\\xbd'",
+        "b'\\xd0\\xbd'",
+        "b'\\xd0\\xbe\\xd0'",
+        "b'\\xb3'",
+        "b'\\xd0\\xbe'",
+        "b' \\xd0\\xbe\\xd0\\xb1\\xd1\\x83\\xd1\\x87\\xd0\\xb5\\xd0\\xbd\\xd0\\xb8\\xd1\\x8f'"
+      ],
+      "note": "Russian prose: +125% vs Qwen 3.5"
+    },
+    {
+      "category": "workload_distortion",
+      "text": "人工智能模型在处理文本时会将字符串分割为词元序列",
+      "live_jev": 24,
+      "predicted_jev": 24,
+      "match": true,
+      "qwen35": 12,
+      "o200k": 17,
+      "predicted_pieces_repr": [
+        "b'\\xe4\\xba\\xba'",
+        "b'\\xe5\\xb7\\xa5'",
+        "b'\\xe6\\x99\\xba'",
+        "b'\\xe8\\x83\\xbd'",
+        "b'\\xe6\\xa8\\xa1'",
+        "b'\\xe5\\x9e\\x8b'",
+        "b'\\xe5\\x9c\\xa8'",
+        "b'\\xe5\\xa4\\x84'",
+        "b'\\xe7\\x90\\x86'",
+        "b'\\xe6\\x96\\x87'",
+        "b'\\xe6\\x9c\\xac'",
+        "b'\\xe6\\x97\\xb6'",
+        "b'\\xe4\\xbc\\x9a'",
+        "b'\\xe5\\xb0\\x86'",
+        "b'\\xe5\\xad\\x97'",
+        "b'\\xe7\\xac\\xa6'",
+        "b'\\xe4\\xb8\\xb2'",
+        "b'\\xe5\\x88\\x86'",
+        "b'\\xe5\\x89\\xb2'",
+        "b'\\xe4\\xb8\\xba'",
+        "b'\\xe8\\xaf\\x8d'",
+        "b'\\xe5\\x85\\x83'",
+        "b'\\xe5\\xba\\x8f'",
+        "b'\\xe5\\x88\\x97'"
+      ],
+      "note": "Chinese prose: +100% vs Qwen 3.5"
+    }
+  ],
+  "output_token_probes": [
+    {
+      "question_id": "hello",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 1,
+      "predicted_jev": 1,
+      "match": true
+    },
+    {
+      "question_id": "helloworld",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 4,
+      "predicted_jev": 4,
+      "match": true
+    },
+    {
+      "question_id": "Java",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 1,
+      "predicted_jev": 1,
+      "match": true
+    },
+    {
+      "question_id": "JavaScript",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 5,
+      "predicted_jev": 5,
+      "match": true
+    },
+    {
+      "question_id": "oworld",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 3,
+      "predicted_jev": 3,
+      "match": true
+    },
+    {
+      "question_id": "inquxyz",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 3,
+      "predicted_jev": 3,
+      "match": true
+    },
+    {
+      "question_id": "errorsxyz",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 3,
+      "predicted_jev": 3,
+      "match": true
+    },
+    {
+      "question_id": "icientsxyz",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 3,
+      "predicted_jev": 3,
+      "match": true
+    },
+    {
+      "question_id": "ondayxyz",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 2,
+      "predicted_jev": 2,
+      "match": true
+    },
+    {
+      "question_id": "yarakat",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 2,
+      "predicted_jev": 2,
+      "match": true
+    },
+    {
+      "question_id": "123456",
+      "input_tokens_delta": 0,
+      "live_output_tokens": 6,
+      "predicted_jev": 6,
+      "match": true
+    }
+  ],
+  "version_checks": [
+    {
+      "requested_model": "typesafe/jev-1.13",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "JavaScript": 5,
+      "inquxyz": 3,
+      "icientsxyz": 3,
+      "all_match": true
+    },
+    {
+      "requested_model": "typesafe/jev-1.14",
+      "resolved_model": "typesafe/jev-1.14-20261014",
+      "JavaScript": 5,
+      "inquxyz": 3,
+      "icientsxyz": 3,
+      "all_match": true
+    }
+  ]
+}

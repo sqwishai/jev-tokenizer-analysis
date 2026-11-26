@@ -1,0 +1,114 @@
+{
+  "source_bitmap": "https://raw.githubusercontent.com/LabGuy94/jevtok/main/src/jevtok/data/jev-1.13.bin",
+  "o200k_n_vocab": 200000,
+  "o200k_mergeable_ranks": 199998,
+  "qwen35_vocab_size": 248044,
+  "qwen35_reachable_size": 247843,
+  "qwen35_mergeless_vocab_entries": 201,
+  "jevtok_counts": {
+    "lookup": 144710,
+    "formed": 53820
+  },
+  "reconstructed_counts": {
+    "pass1_o200k_intersect_qwen_reachable": 135081,
+    "pass2_formed_using_qwen_reachable": 53851,
+    "pass2_formed_using_qwen_vocab": 53851,
+    "lookup_union": 145635,
+    "shared_tokens_blocked_in_pass2": 91846
+  },
+  "discrepancies": {
+    "lookup_valid_nfc_single_pretoken_extra_in_jevtok": 0,
+    "lookup_valid_nfc_single_pretoken_missing_in_jevtok": 0,
+    "formed_valid_nfc_utf8_extra_in_jevtok": 0,
+    "invalid_utf8_only_in_ours": 0
+  },
+  "invalid_utf8_multibyte_breakdown": {
+    "total_in_o200k": 1434,
+    "present_in_both": 840,
+    "absent_in_both": 391,
+    "only_in_jevtok_unobservable_inert": 203,
+    "only_in_reconstructed": 0
+  },
+  "mergeless_qwen_vocab_check": {
+    "total_in_o200k": 62,
+    "present_in_jev_lookup": 0,
+    "present_in_jev_formed": 0
+  },
+  "single_missing_substring_exclusions_in_o200k": {
+    "solely_missing_tok_minus_1": 7995,
+    "solely_missing_strict_prefix": 1122,
+    "solely_missing_strict_suffix_of_tok_minus_1": 6167,
+    "solely_missing_strict_interior": 472,
+    "strict_interior_ascii_examples": [
+      {
+        "token": "errors",
+        "sole_missing_substring": "rro"
+      },
+      {
+        "token": "cludes",
+        "sole_missing_substring": "lud"
+      },
+      {
+        "token": "ancial",
+        "sole_missing_substring": "nci"
+      },
+      {
+        "token": "encial",
+        "sole_missing_substring": "nci"
+      },
+      {
+        "token": "cluded",
+        "sole_missing_substring": "lud"
+      },
+      {
+        "token": "encias",
+        "sole_missing_substring": "nci"
+      },
+      {
+        "token": "Errors",
+        "sole_missing_substring": "rro"
+      },
+      {
+        "token": "ATIONS",
+        "sole_missing_substring": "TIO"
+      },
+      {
+        "token": "ancias",
+        "sole_missing_substring": "nci"
+      },
+      {
+        "token": "nahmen",
+        "sole_missing_substring": "ahm"
+      },
+      {
+        "token": "ouvrez",
+        "sole_missing_substring": "uvr"
+      },
+      {
+        "token": "issons",
+        "sole_missing_substring": "sso"
+      }
+    ]
+  },
+  "non_qwen_o200k_tokens_leaked_into_formed": {
+    "total": 10551,
+    "by_byte_length": {
+      "2": 607,
+      "3": 2164,
+      "4": 4054,
+      "5": 2879,
+      "6": 577,
+      "7": 106,
+      "8": 49,
+      "9": 50,
+      "10": 9,
+      "11": 7,
+      "12": 22,
+      "13": 7,
+      "14": 3,
+      "15": 9,
+      "16": 7,
+      "19": 1
+    }
+  }
+}
