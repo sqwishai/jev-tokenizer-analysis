@@ -1,33 +1,33 @@
 # Analysis of TypeSafe Jev's Billing Tokenizer
 
-This repository reconstructs the token counter behind TypeSafe Jev (`jev-1.13` and `jev-1.14`) for text, images, request framing, and `output_tokens`. Every finding below comes solely from public API responses (`api.typesafe.ai/v1/systemone` and `openrouter.ai/api/alpha/decisions`) and reproducible scripts; we do not have access to TypeSafe's server source code.
+TypeSafe Jev bills substantially more input tokens than Qwen 3.5 processes on non-Latin text, CamelCase code, and images. Across our public benchmarks, Jev's billed counts average **1.96x** higher than Qwen 3.5 on non-Latin text (up to **3.67x** on Thai), **1.31x** higher on CamelCase production code (up to **1.42x** on Objective-C), and **2.63x** higher on images (up to **2.81x**), while plain English stays at **1.02x**. These higher counts also eat into Jev's 32,736-token per-question limit.
 
-All scripts and JSON outputs are included under `scripts/` and `evidence/`.
+| Workload | Average vs. Qwen 3.5 | Peak | Notes |
+|---|---:|---:|---|
+| **Non-Latin text** (10 Wikipedia scripts) | **1.96x (+96%)** | **3.67x** (Thai) | Individual non-Latin tokens reach 15x |
+| **CamelCase code** (12 repos, no comments) | **1.31x (+31%)** | **1.42x** (Objective-C) | Averages +39% vs. `o200k`; dividers hit 24x |
+| **Images** (4 standard resolutions) | **2.63x (+163%)** | **2.81x** (512x512) | Plus 32 to 35 extra tokens for UUID keys; matches ViT+MoE prefill time at 1568x1568 |
+| **Plain English** (Wikipedia) | **1.02x (+2%)** | 1.02x | Close enough to go unnoticed in English testing |
+| **Per-request framing** | +259 base | +7 / question | Added before any text or image tokens |
 
----
+This repository reconstructs the exact token counter behind `jev-1.13` and `jev-1.14` for text, images, request framing, and `output_tokens`. Every finding comes strictly from public API responses (`api.typesafe.ai/v1/systemone` and `openrouter.ai/api/alpha/decisions`) and reproducible scripts under `scripts/` and `evidence/`; we do not have access to TypeSafe's server source code.
 
-## Summary
+## How the billing counter works
 
 Independent latency measurements by [Modaic](https://modaic.dev/blog/latency-doesnt-lie#qwens-tokenizer-predicts-jevs-latency-better-than-jevs-reported-counts) across 9,984 prompts show that Qwen 3.5's tokenizer predicts Jev's actual latency better than Jev's own reported `usage.input_tokens`, alongside throughput and self-identification evidence pointing to a Qwen 3.5 backbone.
 
 Our reconstruction of `usage.input_tokens` matches `LabGuy94/jevtok`'s 600,000-call empirical bitmap of all 199,998 `o200k_base` tokens with **0 observable mismatches**, and matches live `jev-1.13` and `jev-1.14` responses identically on both direct `api.typesafe.ai` and OpenRouter.
 
-### What this means for users
-
-Billed token counts diverge sharply from Qwen 3.5's native counts (and count against Jev's 32,736 per-question context limit) depending on the workload:
-
-- **Non-Latin text (1.37x to 3.67x):** Real Wikipedia articles bill **3.67x** on Thai, **2.51x** on Russian, **2.13x** on Ukrainian, **1.98x** on Arabic, **1.83x** on Greek, **1.55x-1.58x** on Chinese and Japanese, **1.53x** on Hebrew, and **1.47x** on Hindi (while plain English stays at **1.02x**). Individual non-Latin tokens reach up to **15x**.
-- **CamelCase programming languages (1.21x to 1.42x on real code; up to 15x-24x on individual tokens):** Comment-stripped 30 KB production files bill **1.42x** on Objective-C (`IGListKit`), **1.38x** on Java/Spring, **1.37x** on Android Material and C#/.NET, **1.29x** on Android Jetpack Compose (Kotlin) and TypeScript (VSCode), **1.24x** on Swift and AndroidX, and **1.21x** on React/JS (+30% to +49% vs `o200k_base`). Individual SDK identifiers hit **11x-15x** and comment dividers hit **16x-24x**.
-- **Images (2.43x to 2.81x native visual tokens, plus key overhead):** Jev bills **2.43x-2.81x** more tokens per image than Qwen 3.5-VL's native `32x32` count (e.g. `6,274` vs `2,403` at `1568x1568`, roughly matching ViT+MoE prefill time at `1568x1568`), plus `+ T(asset_key)` for the reference string itself (**+32 to +35 extra tokens per image** when using UUID keys or OpenRouter's inline `image_url`).
-- **Fixed per-request overhead:** Every request carries a **259-token** base plus **7 tokens** per question (and additional option/legend framing for `choice` and `score`).
-
 In our view, the simplest explanation that fits both the latency evidence and the exact token-counting behavior is:
 
-1. **Text billing looks like a custom gateway counter designed to decouple billed counts from Qwen 3.5 (obscuring base-model fingerprinting), combined with an off-by-one bug in its fallback BPE filter.**
-   - Returning raw Qwen 3.5 token counts makes the base model trivial to fingerprint from `usage.input_tokens`. Substituting plain `o200k_base` would diverge 2-3x on digits (`\p{N}{1,3}` vs Qwen's single-digit `\p{N}`) and skip `NFC` normalization, misaligning with the 32,736-token per-question limit.
-   - Instead, Jev's counter combines Qwen 3.5's `NFC` normalizer, Qwen 3.5's regex pre-tokenizer, and Qwen 3.5's reachable byte-token set `Q = bytes_256 ∪ {a + b : (a, b) ∈ qwen35_merges}` (`247,843` tokens, excluding the 201 merge-less entries in Qwen 3.5's `vocab`) with OpenAI `o200k_base`'s `199,998` merge ranks `O`.
+1. **Text billing looks like a custom gateway counter built to decouple billed counts from Qwen 3.5 (obscuring base-model fingerprinting), with an off-by-one bug in its fallback BPE filter.**
+
+   Returning raw Qwen 3.5 counts makes the base model easy to fingerprint from `usage.input_tokens`. Swapping in plain `o200k_base` would diverge 2-3x on digits (`\p{N}{1,3}` vs. Qwen's single-digit `\p{N}`) and skip `NFC` normalization, breaking alignment with the 32,736-token limit.
+
+   Instead, Jev's counter combines Qwen 3.5's `NFC` normalizer, regex pre-tokenizer, and reachable byte-token set `Q = bytes_256 ∪ {a + b : (a, b) ∈ qwen35_merges}` (247,843 tokens, excluding 201 merge-less entries in Qwen 3.5's vocab) with OpenAI `o200k_base`'s 199,998 merge ranks `O`:
+
    - **Pass 1 (whole-pretoken lookup):** if `piece in O and piece in Q`, emit 1 token.
-   - **Pass 2 (fallback BPE in `o200k_base` rank order):** a candidate merge `cand` is allowed if and only if `cand in O` and every non-empty contiguous byte substring of `cand[:-1]` is in `Q`. That matches a three-line filter with two apparent mistakes: checking all contiguous substrings instead of BPE merge parents, and using `< len(cand)` instead of `<= len(cand)`:
+   - **Pass 2 (fallback BPE in `o200k_base` rank order):** a candidate merge `cand` is allowed only if `cand in O` and every non-empty contiguous byte substring of `cand[:-1]` is in `Q`. That matches a three-line filter with two apparent mistakes: checking all contiguous substrings instead of BPE merge parents, and writing `< len(cand)` instead of `<= len(cand)`:
 
 ```python
 def allowed_merge(cand: bytes) -> bool:
@@ -40,24 +40,22 @@ def allowed_merge(cand: bytes) -> bool:
     return True
 ```
 
-   That single missing `+ 1` explains all three observed artifacts:
-   - Substrings touching the final byte are never checked (`j` stops at `len(cand) - 1`).
-   - **10,551 non-Qwen `o200k_base` tokens** (`abab`, `crip`, `onday`, `oq`, `):\n`, etc.) pass Pass 2 even though Pass 1 rejects non-Qwen chunks like `oworld`.
-   - **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer chunks. On English Wikipedia, Pass 1 catches most words and keeps billed counts within **+1.6%** of Qwen 3.5, which may explain why the behavior went unnoticed in English testing. On non-Latin Wikipedia articles, billed counts run **+47% to +267%** above Qwen 3.5, and on comment-stripped CamelCase source code they run **+21% to +42%** above Qwen 3.5 (**+30% to +49%** above `o200k_base`).
+   That missing `+ 1` accounts for all three observed behaviors:
+   - Substrings touching the final byte are never checked.
+   - 10,551 non-Qwen `o200k_base` tokens (such as `abab`, `crip`, `onday`, and `):\n`) pass Pass 2 even though Pass 1 rejects non-Qwen chunks like `oworld`.
+   - 91,846 shared `o200k ∩ Qwen 3.5` tokens are blocked inside longer chunks, fragmenting non-Latin words and CamelCase identifiers while Pass 1 catches most ordinary English words.
 
-2. **Image billing uses a `28x28` `ceil` grid multiplied by `2x`, plus the text token length of the asset key.**
-   - Exact observed formula: `2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)` for `280 <= width, height <= 1568` px (`10x28` to `56x28`; HTTP 400 outside this range).
-   - Compared to Qwen 3.5-VL's native `32x32` patch grid (`patch_size=16, merge_size=2`, `1x`), this formula bills **2.43x to 2.81x** more visual tokens (`1024x1024`: `2,740` billed vs `1,026` Qwen 3.5-VL; `1568x1568`: `6,274` billed vs `2,403` Qwen 3.5-VL).
-   - Unlike the text bug, image latency and optical acuity measurements against `qwen/qwen3.5-35b-a3b` indicate that **Jev 1.14 runs images at full 1.00x native resolution (no hidden downsampling up to `1568x1568`)** and that the `~2.6x` visual-to-text ratio closely matches actual ViT+MoE prefill time on a 3B-active sparse MoE at `1568x1568` (`2.52x-2.72x` on Jev 1.14 vs `2.35x-2.37x` on stock Qwen 3.5-35B-A3B). Using `ceil(· / 28)` with a `1,568 px` ceiling (the same grid and cap used by Anthropic Claude rather than Qwen 3.5's `round(· / 32)`) both tracks ViT compute (`2 * (32 / 28)^2 = 2.61x`) and decouples billed step boundaries from Qwen 3.5's `32 px` vision processor.
-   - The one clear image-counting bug is billing `+ T(asset_key)` for the placeholder reference string even though the image replaces it. With UUID asset keys (or OpenRouter's inline `image_url`, which generates a UUID key), this adds **32 to 35 extra tokens per image**.
+2. **Image billing uses a 28x28 `ceil` grid multiplied by 2x, plus the text token count of the asset key.**
 
----
+   Jev bills `2 + T(asset_key) + 2 * ceil(W / 28) * ceil(H / 28)` for images between 280 and 1,568 pixels on each side (2.43x to 2.81x Qwen 3.5-VL's native 32x32 visual token count). Unlike the text bug, our latency and optical acuity tests against `qwen/qwen3.5-35b-a3b` indicate that Jev runs images at full 1.00x native resolution with no hidden downsampling, and the ~2.6x token ratio tracks real ViT+MoE prefill time on a 3B-active sparse MoE at 1568x1568. Using `ceil(· / 28)` with a 1,568 px ceiling (matching Anthropic Claude rather than Qwen 3.5's `round(· / 32)`) both reflects ViT compute and masks Qwen 3.5's 32-pixel patch steps.
+
+   The one clear image billing bug is still charging `T(asset_key)` for the placeholder reference string after the image replaces it, which adds 32 to 35 extra tokens per image on UUID keys or OpenRouter's inline `image_url`.
 
 ## Benchmarks on Public Corpora
 
-All **28 / 28** corpora below (16 Wikipedia `"Earth"` articles + 12 open-source code files) were measured locally with `JevBillingTokenizer` and spot-checked live (first 1,500 characters of each corpus) against `typesafe/jev-1.14` with **28 / 28 exact matches** (`evidence/workload_benchmarks.json`).
+All 28 public corpora below (16 Wikipedia "Earth" articles and 12 open-source code files) were measured locally with `JevBillingTokenizer` and spot-checked live on the first 1,500 characters against `typesafe/jev-1.14`, with 28/28 exact matches (`evidence/workload_benchmarks.json`).
 
-### 1. Wikipedia Articles (first 8,000 chars of `"Earth"`)
+### 1. Wikipedia Articles (first 8,000 chars of "Earth")
 
 | Wikipedia article | Qwen 3.5 | `o200k` | Jev | **Jev / Qwen 3.5** | **vs. `o200k`** | Live spotcheck |
 |---|---:|---:|---:|---:|---:|---|
@@ -80,7 +78,7 @@ All **28 / 28** corpora below (16 Wikipedia `"Earth"` articles + 12 open-source 
 
 ### 2. Open-Source Source Code (first 30 KB: raw vs. comments stripped)
 
-Qwen's regex does not split CamelCase identifiers, so multi-word symbols enter Pass 2 as a single chunk and fragment when interior substrings are absent from `Q`. Stripping license headers and doc comments isolates the code ratio (+21% to +42% vs. Qwen 3.5; +30% to +49% vs. `o200k`):
+Qwen's regex keeps CamelCase identifiers as single pre-tokens, so multi-word symbols enter Pass 2 whole and fragment when interior substrings are missing from `Q`. Stripping license headers and doc comments isolates the code ratio (averaging +31% vs. Qwen 3.5 and +39% vs. `o200k`):
 
 | Open-source file (first 30 KB) | Raw vs. Qwen | Code-only Qwen 3.5 | Code-only `o200k` | Code-only Jev | **Code-only vs. Qwen 3.5** | **Code-only vs. `o200k`** | Live spotcheck |
 |---|---:|---:|---:|---:|---:|---:|---|
@@ -97,11 +95,9 @@ Qwen's regex does not split CamelCase identifiers, so multi-word symbols enter P
 | **Swift / iOS** (`Alamofire` `Session.swift`) | 1.15x | 5,053 | 4,605 | **6,253** | **1.24x (+23.7%)** | **+35.8%** | exact |
 | **React / JS** (`facebook/react` `ReactFiberWorkLoop.js`) | 1.20x | 7,947 | 6,959 | **9,596** | **1.21x (+20.7%)** | **+37.9%** | exact |
 
----
-
 ## Extremal Token Multipliers
 
-An exhaustive scan of all **247,843** reachable Qwen 3.5 tokens and all **53,851** `FORMED` tokens (`scripts/find_extremal_multipliers.py`, **22 / 22** curated cases live-verified on `typesafe/jev-1.14` in `evidence/extremal_multipliers.json`) shows a maximum ratio of **24.0x** higher than Qwen 3.5 (**16x-17x** scalable at arbitrary length) versus a floor of **0.50x** (2.0x lower):
+An exhaustive scan of all 247,843 reachable Qwen 3.5 tokens and all 53,851 `FORMED` tokens (`scripts/find_extremal_multipliers.py`, 22 curated cases live-verified in `evidence/extremal_multipliers.json`) shows a maximum ratio of **24.0x** higher than Qwen 3.5 (16x-17x scalable at arbitrary length) versus a lower bound of **0.50x**:
 
 | Category | Exact string | Qwen 3.5 | `o200k` | Jev (live) | **Jev / Qwen 3.5** | **Jev / `o200k`** |
 |---|---|---:|---:|---:|---:|---:|
@@ -124,11 +120,7 @@ An exhaustive scan of all **247,843** reachable Qwen 3.5 tokens and all **53,851
 | JS / Jest token | `toHaveBeenCalledWith` | 1 | 5 | **9** | **9.0x** | 1.8x |
 | Global lower bound | `'ab' * 100` / `'-' * 15 + '\n'` | 100 / 2 | 50 / 1 | **50 / 1** | **0.50x** | 1.0x |
 
----
-
 ## Image Tokenization and Request Constants
-
-All image and framing numbers below are verified live in `evidence/image_and_parity_probes.json` (**22/22** resolutions and 1-pixel steps, **8/8** dimension bounds, **10/10** format/key/placement variants, **9/9** framing constants).
 
 ### Image formula and bounds
 
@@ -136,10 +128,9 @@ All image and framing numbers below are verified live in `evidence/image_and_par
 \text{image tokens}(W, H, \text{key}) = 2 + T(\text{key}) + 2 \times \left\lceil \frac{W}{28} \right\rceil \times \left\lceil \frac{H}{28} \right\rceil
 ```
 
-- **Bounds:** `280 <= width <= 1568` and `280 <= height <= 1568` (`10x28` to `56x28`). Images 1 pixel outside (`279x280`, `280x279`, `1569x280`, `280x1569`, `1920x1080`) return `HTTP 400 Invalid image dimensions`.
-- **1-pixel step checks:** `504x512` (`18x28`) = `687` visual tokens; `505x512` = `725`; `532x512` (`19x28`) = `725`; `533x512` = `763`; `1540x280` (`55x28`) = `1,103`; `1541x280` = `1,123` (including 1-token key `"a"`).
-- **Invariants:** identical across PNG and JPEG, solid color and random noise, `noul` and `box`, `state` and `instructions`, and `jev-1.13` and `jev-1.14`. Referencing an asset twice bills it twice.
-- **Asset-key billing:** at `280x280` (`200` visual tokens, base `267`), `key="a"` (`T=1`) bills `470`, `key="img1"` (`T=2`) bills `471`, `key="JavaScript"` (`T=5`) bills `474`, and UUID `key="a3f1c2e8-550e-41d4-a716-446655440000"` (`T=35`) adds **+34 tokens** over `"a"`. OpenRouter's inline `image_url` rewrites the image to a generated UUID key inside a list, adding **+32 tokens** at `512x512` over an explicit `"a"` key.
+Jev accepts images between 280 and 1,568 pixels on both width and height (10 to 56 multiples of 28) and rejects anything even one pixel outside that range with HTTP 400. Counts are identical across PNG and JPEG, solid color and noise, `noul` and `box`, `state` and `instructions`, and `jev-1.13` and `jev-1.14`; referencing the same asset twice bills it twice.
+
+Because `T(key)` is billed on top of the image patches, long reference names inflate per-image cost. A UUID asset key adds 34 extra tokens over a 1-token key like `"a"`, and OpenRouter's inline `image_url` shorthand (which auto-generates a UUID key inside a list) adds 32 extra tokens per image. All 49 live resolution, 1-pixel step boundary, key-variant, and constant checks are recorded in `evidence/image_and_parity_probes.json`.
 
 | Resolution | Qwen 3.5-VL native (`32x32` + 2) | Qwen 2.5-VL / Claude (`28x28`) | Jev visual tokens (`2 + 2*ceil(W/28)*ceil(H/28)`) | Ratio vs. Qwen 3.5-VL |
 |---|---:|---:|---:|---:|
@@ -148,21 +139,14 @@ All image and framing numbers below are verified live in `evidence/image_and_par
 | `1024 x 1024` | 1,026 | 1,369 | **2,740** *(+ `T(key)`)* | **2.67x** |
 | `1568 x 1568` | 2,403 | 3,136 | **6,274** *(+ `T(key)`)* | **2.61x** |
 
-### Image latency, resolution acuity, and why the `28 px` formula looks the way it does
+### Image latency, resolution acuity, and the 28 px grid
 
-To test whether Jev 1.14 downsamples images behind the scenes or runs them at native resolution, we compared `jev-1.14.0` (`api.typesafe.ai`) against `qwen/qwen3.5-35b-a3b` (OpenRouter pinned to `Parasail`, which runs native `32x32` resolution at `1568x1568` with `2,417` prompt tokens) on both prefill latency and fine-detail optical acuity (`evidence/image_latency_and_acuity.json`).
+To check whether Jev 1.14 downsamples images behind the scenes or runs them at full resolution, we compared `jev-1.14.0` (`api.typesafe.ai`) against `qwen/qwen3.5-35b-a3b` (OpenRouter pinned to Parasail, which runs native 32x32 resolution at 1568x1568) on both prefill latency and fine-detail optical acuity (`evidence/image_latency_and_acuity.json`).
 
 ![Jev 1.14 vs. Qwen3.5-35B-A3B image prefill latency and resolution acuity](evidence/image_latency_and_acuity.png)
 
-1. **No hidden downsampling up to `1568x1568`:**
-   - **Latency rises quadratically through `1568x1568`:** for `4 x W x W` solid PNGs (4 KB upload, fresh color per repeat), Jev 1.14 median latency climbs `148.0 -> 148.3 -> 163.0 -> 194.2 -> 222.6 -> 269.7 ms` from `280` to `1568 px` with no flat ceiling.
-   - **Optical acuity matches `1.00x` Qwen 3.5-35B-A3B:** on 4-choice 2-digit numbers (`42`, `79`, `16`, `85`) rendered in `4-8 px` bold Arial on a `1568x1568` canvas, Jev 1.14 scores `1/4` (`4px`), `3/4` (`5px`), `3/4` (`6px`), `4/4` (`7px`, mean `P = 0.99`), `4/4` (`8px`, `P = 1.00`). Stock `qwen/qwen3.5-35b-a3b` scores `1/4, 4/4, 2/4, 4/4, 4/4` at `1.00x` (native), drops to `1/4, 1/4, 1/4, 2/4, 3/4` at `0.75x` (`1176x1176`), and collapses to `1/4` through `8px` at `0.50x` (`784x784`).
-   - **Nyquist 1-pixel stripes:** Jev 1.14 distinguishes 1-pixel vertical vs. horizontal stripes in a `160x160` patch on `1568x1568` at `P = 0.97` (vertical) and `P = 0.95` (horizontal).
-
-2. **Why `2 * ceil(W/28) * ceil(H/28)` aligns with ViT compute while obscuring Qwen 3.5's patch grid:**
-   - Linear fits to each endpoint's prose baseline give `5.44 ms/1k` (`min`) / `5.03 ms/1k` (`med`) on Jev 1.14 and `24.10 ms/1k` (`min`) / `27.17 ms/1k` (`med`) on Qwen 3.5-35B-A3B Parasail (a `4.43x` min / `5.41x` med hardware speed ratio).
-   - Converting `4 x 1568x1568` (`9,627` native Qwen visual tokens; `25,379` billed by Jev) into equivalent prose tokens yields **`24.2k` (`2.52x`) min / `26.1k` (`2.72x`) med on Jev 1.14**, versus **`22.6k` (`2.35x`) min / `22.8k` (`2.37x`) med on stock `qwen/qwen3.5-35b-a3b`** (`4.13x` min / `4.71x` med raw compute-time ratio, matching the prose hardware ratio).
-   - On a sparse 3B-active MoE like Qwen 3.5-35B-A3B, text prefill is cheap while each `1568x1568` image runs a dense 27-layer ViT on `98 x 98 = 9,604` unmerged `16x16` patches with quadratic self-attention. Because `2 * (32 / 28)^2 = 2.61x`, the `2 * ceil(W/28) * ceil(H/28)` rule is roughly compute-proportional at high resolution, while its `ceil(· / 28)` rounding and `1,568 px` cap (matching Anthropic Claude rather than Qwen's `round(· / 32)` `smart_resize`) avoid exposing Qwen 3.5-VL's `32 px` step boundaries.
+1. **No hidden downsampling up to 1568x1568:** Jev's compute latency climbs quadratically all the way from 280 px to 1568 px with no flat cap. On a 4-choice 2-digit eye-chart rendered at 4-8 px bold Arial on a 1568x1568 canvas, Jev matches stock `qwen/qwen3.5-35b-a3b` at 1.00x native resolution (100% accuracy at 7-8 px), whereas 0.75x downsampling drops 5-7 px sharply and 0.50x collapses to random chance through 8 px. Jev also distinguishes 1-pixel vertical from horizontal stripes on 1568x1568 (`P = 0.97` and `0.95`).
+2. **Why the 28 px x 2x rule tracks compute while masking Qwen 3.5's grid:** Converting `4 x 1568x1568` compute time into equivalent prose tokens using each model's own text prefill slope gives 24.2k-26.1k prose-token equivalents (2.52x-2.72x per Qwen visual token) on Jev 1.14, versus 22.6k-22.8k (2.35x-2.37x) on stock `qwen/qwen3.5-35b-a3b`. On a 3B-active sparse MoE, text prefill is cheap while each 1568x1568 image runs a dense 27-layer ViT on 9,604 unmerged 16x16 patches with quadratic self-attention. Because `2 * (32 / 28)^2 = 2.61x`, the 28 px x 2x rule roughly tracks high-resolution ViT compute while hiding Qwen 3.5-VL's 32 px `round()` boundaries behind Anthropic Claude's 28 px `ceil()` grid and 1,568 px ceiling.
 
 ### Request billing constants
 
@@ -172,57 +156,53 @@ To test whether Jev 1.14 downsamples images behind the scenes or runs them at na
 
 | Component | Formula / constant | Live `jev-1.14` check |
 |---|---|---|
-| Per-request base | **`259`** | `1 box` (`instr=""`) = `266` (`259 + 7`) |
-| Per question | **`+7`** `+ T(instructions)` | 1 / 2 / 3 `noul` (`instr="x"`): `267`, `275`, `283` |
-| `noul` (no criteria) / `box` extra ($E_q$) | **`+0`** | `267` (`noul`, `T=1`), `266` (`box`, `T=0`) |
-| `choice` extra (no descriptions) | **`+4`** `+ sum(5 + T(opt_key))` | 2 opts (`x,y`): `282`; 3 opts (`x,y,z`): `288` |
-| `choice` legend (any non-empty desc) | **`+6`** `+ sum(5 + T(desc))` | 2 opts w/ `"a","b"`: `300` (`282 + 18`) |
-| `score` legend | **`+6`** `+ sum(5 + T(level))` | 2 levels: `284`; 3 levels: `290` |
-| Structured `state` | root `+0`, nested container `+2`, sibling sep `+1`, dict key `T(k)+3`, nested string `T(s)+2` | `state=""` (`270`) vs `state=[""]` (`272`) |
-| `output_tokens` (unbilled, `noul`) | **`4 + 15 * N_questions + sum(T(qid))`** | 1 / 2 / 3 `noul` (`a,b,c`): `20`, `36`, `52` |
+| Per-request base | **259** | 1 `box` (empty instructions) = 266 |
+| Per question | **+7** + `T(instructions)` | 1 / 2 / 3 `noul` (1-tok instr): 267, 275, 283 |
+| `noul` (no criteria) / `box` extra ($E_q$) | **+0** | 267 (`noul`), 266 (`box`) |
+| `choice` extra (no descriptions) | **+4** + `sum(5 + T(opt_key))` | 2 opts: 282; 3 opts: 288 |
+| `choice` legend (any non-empty desc) | **+6** + `sum(5 + T(desc))` | 2 opts with 1-tok desc: 300 (+18) |
+| `score` legend | **+6** + `sum(5 + T(level))` | 2 levels: 284; 3 levels: 290 |
+| Structured `state` | root +0, nested +2, sep +1, key `T(k)+3`, str `T(s)+2` | `state=""` (270) vs `state=[""]` (272) |
+| `output_tokens` (unbilled, `noul`) | **4 + 15 * N + `sum(T(qid))`** | 1 / 2 / 3 `noul` (1-tok IDs): 20, 36, 52 |
 
 ### Comparison with other public tokenizers
 
-- **Text:** No public model tokenizer matches Jev (0 matches across 192+ public tokenizers tested in prior studies). No standard BPE, Unigram, or WordPiece tokenizer produces the Pass 1 vs. Pass 2 mismatch (`inqu` = 1 standalone, `inquxyz` = 3).
-- **Images:** No exact match. Anthropic Claude (standard tier) uses `28x28` `ceil` patches with a `1,568 px` long-edge cap, and Qwen 2.5-VL uses a `28 px` factor, but neither applies a `2x` multiplier, rejects images outside `280-1,568 px` instead of resizing, or bills `+ T(asset_key)`. Qwen 3-VL and Qwen 3.5 use `32x32` patches at `1x`; OpenAI uses `32x32` patches with `1.2x`-`1.62x` multipliers; Gemini 3/4 uses fixed budgets (`280/560/1120/2240`).
-
----
+No public model tokenizer matches Jev's text counter (0 matches across 192+ public tokenizers in prior studies), and no standard BPE, Unigram, or WordPiece model produces the Pass 1 vs. Pass 2 split (`inqu` = 1 standalone, `inquxyz` = 3). On images, Anthropic Claude shares the 28x28 `ceil` grid and 1,568 px cap and Qwen 2.5-VL shares the 28 px factor, but neither doubles patch counts, hard-rejects outside 280-1,568 px instead of resizing, or bills the asset key string.
 
 ## Verification Details
 
-### 1. Full 199,998-token diff (`evidence/full_vocab_verification.json`)
+### 1. Full 199,998-token diff
 
-Comparison of `jev_billing_tokenizer.py` against [`LabGuy94/jevtok`](https://github.com/LabGuy94/jevtok)'s 600,000-call bitmap (`jev-1.13.bin`):
+Comparing `jev_billing_tokenizer.py` against [`LabGuy94/jevtok`](https://github.com/LabGuy94/jevtok)'s 600,000-call bitmap (`jev-1.13.bin`, full output in `evidence/full_vocab_verification.json`):
 
 | Check across `o200k_base` (199,998 tokens) | Result |
 |---|---:|
-| `LOOKUP` discrepancies (all valid NFC single pretokens, 144,710 tokens) | **0** |
-| `FORMED` discrepancies (all valid NFC UTF-8 tokens, 53,820 tokens) | **0** |
-| Multi-byte invalid-UTF-8 tokens (`840` present in both, `391` absent in both, `203` unobservable/inert in `jev-1.13.bin`) | **0 only in reconstructed** |
-| Merge-less Qwen 3.5 vocab entries (`o200k ∩ (q_vocab \ q_merges)`, 62 tokens) in `LOOKUP` | **0 / 62** |
-| Non-Qwen `o200k_base` tokens present in `FORMED` | **10,551** |
-| Shared `o200k ∩ Qwen 3.5` tokens excluded from `FORMED` | **91,846** |
+| `LOOKUP` discrepancies (all 144,710 valid NFC single pretokens) | **0** |
+| `FORMED` discrepancies (all 53,820 valid NFC UTF-8 tokens) | **0** |
+| Multi-byte invalid-UTF-8 tokens (840 in both, 391 in neither, 203 inert) | **0 false positives** |
+| Merge-less Qwen 3.5 vocab entries appearing in `LOOKUP` | **0 / 62** |
+| Non-Qwen `o200k_base` tokens leaking into `FORMED` | **10,551** |
+| Shared `o200k ∩ Qwen 3.5` tokens blocked in Pass 2 | **91,846** |
 
-Single-missing-substring exclusions inside `o200k_base` (all confirmed excluded in `jev-1.13.bin`):
-- **7,995** excluded solely for missing `cand[:-1]` (`[0 : L-1]`, e.g. `Java` -> `Jav`, `orld` -> `orl`)
-- **1,122** excluded solely for missing a strict prefix (`[0 : k]`, e.g. `Btn` -> `Bt`, `create` -> `crea`, `thing` -> `thi`)
-- **6,167** excluded solely for missing a strict suffix of `cand[:-1]` (`[k : L-1]`, e.g. `inqu` -> `nq`, `order` -> `rde`, ` minul` -> `minu`)
-- **472** excluded solely for missing a strictly interior slice (`[a : b]`, `0 < a < b < L-1`, e.g. `errors` -> `rro`, `icients` -> `cien`, `istical` -> `stic`, `adresse` -> `dres`, `ierenden` -> `erend`)
+Every single-missing-substring exclusion inside `o200k_base` matches `jev-1.13.bin`:
 
-### 2. Live probes and parity
+| Missing substring position | Blocked tokens | Example |
+|---|---:|---|
+| Full prefix `cand[:-1]` | 7,995 | `Java` blocked by missing `Jav` |
+| Strict prefix `cand[:k]` | 1,122 | `create` blocked by missing `crea` |
+| Suffix of `cand[:-1]` | 6,167 | `inqu` blocked by missing `nq` |
+| Strictly interior slice | 472 | `errors` blocked by missing `rro` |
 
-- **Text probes (`evidence/live_probes.json`):** **71 / 71** state probes, **11 / 11** `output_tokens` probes, `instructions` check (`JavaScript` = 5), and `jev-1.13`/`jev-1.14` parity matched 100%.
-- **Version parity (`evidence/image_and_parity_probes.json`):** `typesafe/jev-1.13-20260917` vs `typesafe/jev-1.14-20261014` matched **20 / 20** on text, framing, `output_tokens`, images, and error bounds (`box` returns `400` on `1.13` and succeeds on `1.14`).
-- **Endpoint parity (`evidence/image_and_parity_probes.json`):** OpenRouter (`openrouter.ai/api/alpha/decisions`, `typesafe/jev-1.14`) vs direct `api.typesafe.ai/v1/systemone` (`jev-1.14.0`) matched **21 / 21** (including `box` and all image probes) to the exact token. This confirms the billing counter runs on TypeSafe's upstream server rather than inside OpenRouter.
+### 2. Live probes and endpoint parity
+
+All live discriminating checks matched our reconstruction 100%: 71 state probes and 11 `output_tokens` probes in `evidence/live_probes.json`, plus 20 `jev-1.13` vs. `jev-1.14` parity probes (`box` is the only version difference, returning 400 on 1.13 and succeeding on 1.14) and 21 direct `api.typesafe.ai` vs. OpenRouter parity probes in `evidence/image_and_parity_probes.json`. Matching direct TypeSafe and OpenRouter token-for-token confirms the billing counter runs inside TypeSafe's upstream server rather than OpenRouter.
 
 ### 3. Why simpler explanations are ruled out
 
-1. **Not a sequential two-tokenizer pipeline:** on `inquxyz`, `errorsxyz`, `icientsxyz`, and `ierendenxyz`, both Qwen 3.5 and `o200k_base` emit 2 tokens, while Jev emits 3. On `yarakat`, ` terdapat`, and ` dikkat`, Qwen 3.5 emits 3 tokens (`y|arak|at`) while Jev emits 2 (`yar|akat`) across Qwen's boundaries.
-2. **Not stock `tiktoken` with one `mergeable_ranks` dict:** `Java`, `inqu`, `errors`, `icients`, and `ierenden` count as 1 token standalone (Pass 1), yet the same adjacent pieces (`J+ava`, `in+qu`, `err+ors`, `ici+ents`) do not merge inside a longer pretoken (Pass 2).
-3. **Not stock HuggingFace `tokenizers` with swapped `vocab`/`merges`:** `10,551` tokens in `FORMED` (`abab`, `crip`, `onday`, `oq`, `avoq`) do not exist in Qwen 3.5's vocab, while `inqu`, `errors`, and `icients` exist with identical merge splits in both tokenizers.
-4. **Not a `byte_pair_merge` indexing bug or prefix-trie bug:** for `icientsxyz`, `errorsxyz`, and `ierendenxyz`, every node in both `o200k`'s and Qwen 3.5's merge trees exists in both vocabularies. The blocking interior slices (`cien`, `rro`, `erend`) cross early merge boundaries so `parts` never contains their endpoints, and each missing slice is a valid prefix of another Qwen 3.5 token (`cient`, `rror`, `erende`). Because `FORMED` is the exact logical AND over all $\binom{L}{2}$ slices `cand[i:j]` ($0 \le i < j < L$), any code that reproduces it must test all $\binom{L}{2}$ substrings against `Q`.
-
----
+1. **Not a sequential two-tokenizer pipeline:** On `inquxyz`, `errorsxyz`, `icientsxyz`, and `ierendenxyz`, both Qwen 3.5 and `o200k_base` emit 2 tokens, while Jev emits 3. Conversely, on `yarakat`, ` terdapat`, and ` dikkat`, Qwen 3.5 emits 3 tokens while Jev merges across Qwen's boundaries into 2.
+2. **Not stock `tiktoken` with one `mergeable_ranks` dict:** Standalone `Java`, `inqu`, `errors`, `icients`, and `ierenden` count as 1 token (Pass 1), yet the exact same adjacent pieces refuse to merge inside a longer pretoken (Pass 2).
+3. **Not stock HuggingFace `tokenizers` with swapped `vocab`/`merges`:** 10,551 tokens in `FORMED` (such as `abab`, `crip`, and `onday`) do not exist in Qwen 3.5's vocab, while `inqu`, `errors`, and `icients` exist with identical splits in both tokenizers.
+4. **Not a `byte_pair_merge` indexing bug or prefix-trie bug:** For `icientsxyz`, `errorsxyz`, and `ierendenxyz`, every node in both merge trees exists in both vocabularies, the blocking interior slices (`cien`, `rro`, `erend`) cross early merge boundaries, and each is a valid prefix of another Qwen 3.5 token (`cient`, `rror`, `erende`). Because `FORMED` is the logical AND over all $\binom{L}{2}$ slices `cand[i:j]` ($0 \le i < j < L$), any reproducing code must test all $\binom{L}{2}$ substrings against `Q`.
 
 ## Reproducing Locally
 
@@ -249,23 +229,17 @@ export OPENROUTER_API_KEY=...
 export TYPESAFE_API_KEY=...   # optional; enables direct api.typesafe.ai parity checks
 uv run python scripts/run_image_and_parity_probes.py
 
-# 6. Regenerate the image latency and optical acuity figure from evidence/image_latency_and_acuity.json
+# 6. Regenerate the image latency and optical acuity figure
 uv run python scripts/plot_image_latency_and_acuity.py
 ```
 
 ## Files
 
-- `jev_billing_tokenizer.py`: standalone implementation of Jev's text (`JevBillingTokenizer.count`) and image (`JevBillingTokenizer.count_image`) token counter.
-- `scripts/verify_full_vocab.py`: reproduces the 199,998-token diff against `LabGuy94/jevtok` (`jev-1.13.bin`).
-- `scripts/run_live_probes.py`: runs 71 state probes, 11 `output_tokens` probes, `instructions` check, and version parity.
-- `scripts/run_image_and_parity_probes.py`: runs 22 image resolution/step probes, 8 dimension-bound probes, 10 variant/key probes, 9 constant probes, 20 `jev-1.13`/`jev-1.14` parity probes, and 21 OpenRouter vs. direct TypeSafe parity probes.
-- `scripts/benchmark_workloads.py`: benchmarks 12 open-source code files (raw and comment-stripped) and 16 Wikipedia `"Earth"` articles with live spotchecks.
-- `scripts/find_extremal_multipliers.py`: exhaustive 247,843-token extremal multiplier scanner with 22 live checks.
+- `jev_billing_tokenizer.py`: standalone implementation of Jev's text and image token counter.
+- `scripts/verify_full_vocab.py`: 199,998-token diff against `LabGuy94/jevtok` (`jev-1.13.bin`).
+- `scripts/run_live_probes.py`: live text, `output_tokens`, and version parity probes.
+- `scripts/run_image_and_parity_probes.py`: live image, billing-constant, version-parity, and endpoint-parity probes.
+- `scripts/benchmark_workloads.py`: 12 open-source code files (raw and comment-stripped) and 16 Wikipedia articles with live spotchecks.
+- `scripts/find_extremal_multipliers.py`: exhaustive 247,843-token extremal multiplier scan with 22 live checks.
 - `scripts/plot_image_latency_and_acuity.py`: generates `evidence/image_latency_and_acuity.png` from `evidence/image_latency_and_acuity.json`.
-- `evidence/full_vocab_verification.json`: 199,998-token bitmap diff output.
-- `evidence/live_probes.json`: live text probe results.
-- `evidence/image_and_parity_probes.json`: live image, constant, version-parity, and endpoint-parity results.
-- `evidence/image_latency_and_acuity.json`: Jev 1.14 vs. Qwen3.5-35B-A3B image prefill latency, optical acuity, and 1-pixel stripe results.
-- `evidence/image_latency_and_acuity.png`: 3-panel plot comparing equivalent prose tokens, resolution scaling, and optical acuity.
-- `evidence/workload_benchmarks.json`: 28/28 public-corpus benchmark results.
-- `evidence/extremal_multipliers.json`: 22/22 extremal multiplier scan results.
+- `evidence/`: JSON outputs and plot for every check above.
