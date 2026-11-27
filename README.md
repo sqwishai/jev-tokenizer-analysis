@@ -122,7 +122,9 @@ All image and framing numbers below are verified live in `evidence/image_and_par
 
 ### Image formula and bounds
 
-$$\text{image\_tokens}(W, H, \text{key}) = 2 + T(\text{key}) + 2 \times \left\lceil \frac{W}{28} \right\rceil \times \left\lceil \frac{H}{28} \right\rceil$$
+```math
+\text{image tokens}(W, H, \text{key}) = 2 + T(\text{key}) + 2 \times \left\lceil \frac{W}{28} \right\rceil \times \left\lceil \frac{H}{28} \right\rceil
+```
 
 - **Bounds:** `280 <= width <= 1568` and `280 <= height <= 1568` (`10x28` to `56x28`). Images 1 pixel outside (`279x280`, `280x279`, `1569x280`, `280x1569`, `1920x1080`) return `HTTP 400 Invalid image dimensions`.
 - **1-pixel step checks:** `504x512` (`18x28`) = `687` visual tokens; `505x512` = `725`; `532x512` (`19x28`) = `725`; `533x512` = `763`; `1540x280` (`55x28`) = `1,103`; `1541x280` = `1,123` (including 1-token key `"a"`).
@@ -138,7 +140,9 @@ $$\text{image\_tokens}(W, H, \text{key}) = 2 + T(\text{key}) + 2 \times \left\lc
 
 ### Request billing constants
 
-$$\text{input\_tokens} = 259 + S_{\text{state}} + \sum_{q} \bigl(7 + T(\text{instructions}_q) + E_q\bigr)$$
+```math
+\text{input tokens} = 259 + S_{\text{state}} + \sum_{q} \bigl(7 + T(\text{instructions}_q) + E_q\bigr)
+```
 
 | Component | Formula / constant | Live `jev-1.14` check |
 |---|---|---|
