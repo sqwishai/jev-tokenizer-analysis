@@ -38,8 +38,9 @@ def allowed_merge(cand: bytes) -> bool:
 
 2. **Image billing uses a `28x28` `ceil` grid multiplied by `2x`, plus the text token length of the asset key.**
    - Exact observed formula: `2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)` for `280 <= width, height <= 1568` px (`10x28` to `56x28`; HTTP 400 outside this range).
-   - Compared to Qwen 3.5-VL's native `32x32` patch grid (`patch_size=16, merge_size=2`, `1x`), this formula bills **2.43x to 2.81x** more visual tokens (`1024x1024`: `2,740` billed vs `1,026` Qwen 3.5-VL; `1568x1568`: `6,274` billed vs `2,403` Qwen 3.5-VL) and masks the `32`-pixel patch boundary.
-   - Billing `+ T(asset_key)` charges text tokens for the reference key string even though the image replaces it. With UUID asset keys (or OpenRouter's inline `image_url`, which generates a UUID key), this adds **32 to 35 extra tokens per image**.
+   - Compared to Qwen 3.5-VL's native `32x32` patch grid (`patch_size=16, merge_size=2`, `1x`), this formula bills **2.43x to 2.81x** more visual tokens (`1024x1024`: `2,740` billed vs `1,026` Qwen 3.5-VL; `1568x1568`: `6,274` billed vs `2,403` Qwen 3.5-VL).
+   - Unlike the text bug, image latency and optical acuity measurements against `qwen/qwen3.5-35b-a3b` indicate that **Jev 1.14 runs images at full 1.00x native resolution (no hidden downsampling up to `1568x1568`)** and that the `~2.6x` visual-to-text ratio closely matches actual ViT+MoE prefill time on a 3B-active sparse MoE at `1568x1568` (`2.52x-2.72x` on Jev 1.14 vs `2.35x-2.37x` on stock Qwen 3.5-35B-A3B). Using `ceil(· / 28)` with a `1,568 px` ceiling (the same grid and cap used by Anthropic Claude rather than Qwen 3.5's `round(· / 32)`) both tracks ViT compute (`2 * (32 / 28)^2 = 2.61x`) and decouples billed step boundaries from Qwen 3.5's `32 px` vision processor.
+   - The one clear image-counting bug is billing `+ T(asset_key)` for the placeholder reference string even though the image replaces it. With UUID asset keys (or OpenRouter's inline `image_url`, which generates a UUID key), this adds **32 to 35 extra tokens per image**.
 
 ---
 
@@ -138,6 +139,22 @@ All image and framing numbers below are verified live in `evidence/image_and_par
 | `1024 x 1024` | 1,026 | 1,369 | **2,740** *(+ `T(key)`)* | **2.67x** |
 | `1568 x 1568` | 2,403 | 3,136 | **6,274** *(+ `T(key)`)* | **2.61x** |
 
+### Image latency, resolution acuity, and why the `28 px` formula looks the way it does
+
+To test whether Jev 1.14 downsamples images behind the scenes or runs them at native resolution, we compared `jev-1.14.0` (`api.typesafe.ai`) against `qwen/qwen3.5-35b-a3b` (OpenRouter pinned to `Parasail`, which runs native `32x32` resolution at `1568x1568` with `2,417` prompt tokens) on both prefill latency and fine-detail optical acuity (`evidence/image_latency_and_acuity.json`).
+
+![Jev 1.14 vs. Qwen3.5-35B-A3B image prefill latency and resolution acuity](evidence/image_latency_and_acuity.png)
+
+1. **No hidden downsampling up to `1568x1568`:**
+   - **Latency rises quadratically through `1568x1568`:** for `4 x W x W` solid PNGs (4 KB upload, fresh color per repeat), Jev 1.14 median latency climbs `148.0 -> 148.3 -> 163.0 -> 194.2 -> 222.6 -> 269.7 ms` from `280` to `1568 px` with no flat ceiling.
+   - **Optical acuity matches `1.00x` Qwen 3.5-35B-A3B:** on 4-choice 2-digit numbers (`42`, `79`, `16`, `85`) rendered in `4-8 px` bold Arial on a `1568x1568` canvas, Jev 1.14 scores `1/4` (`4px`), `3/4` (`5px`), `3/4` (`6px`), `4/4` (`7px`, mean `P = 0.99`), `4/4` (`8px`, `P = 1.00`). Stock `qwen/qwen3.5-35b-a3b` scores `1/4, 4/4, 2/4, 4/4, 4/4` at `1.00x` (native), drops to `1/4, 1/4, 1/4, 2/4, 3/4` at `0.75x` (`1176x1176`), and collapses to `1/4` through `8px` at `0.50x` (`784x784`).
+   - **Nyquist 1-pixel stripes:** Jev 1.14 distinguishes 1-pixel vertical vs. horizontal stripes in a `160x160` patch on `1568x1568` at `P = 0.97` (vertical) and `P = 0.95` (horizontal).
+
+2. **Why `2 * ceil(W/28) * ceil(H/28)` aligns with ViT compute while obscuring Qwen 3.5's patch grid:**
+   - Linear fits to each endpoint's prose baseline give `5.44 ms/1k` (`min`) / `5.03 ms/1k` (`med`) on Jev 1.14 and `24.10 ms/1k` (`min`) / `27.17 ms/1k` (`med`) on Qwen 3.5-35B-A3B Parasail (a `4.43x` min / `5.41x` med hardware speed ratio).
+   - Converting `4 x 1568x1568` (`9,627` native Qwen visual tokens; `25,379` billed by Jev) into equivalent prose tokens yields **`24.2k` (`2.52x`) min / `26.1k` (`2.72x`) med on Jev 1.14**, versus **`22.6k` (`2.35x`) min / `22.8k` (`2.37x`) med on stock `qwen/qwen3.5-35b-a3b`** (`4.13x` min / `4.71x` med raw compute-time ratio, matching the prose hardware ratio).
+   - On a sparse 3B-active MoE like Qwen 3.5-35B-A3B, text prefill is cheap while each `1568x1568` image runs a dense 27-layer ViT on `98 x 98 = 9,604` unmerged `16x16` patches with quadratic self-attention. Because `2 * (32 / 28)^2 = 2.61x`, the `2 * ceil(W/28) * ceil(H/28)` rule is roughly compute-proportional at high resolution, while its `ceil(· / 28)` rounding and `1,568 px` cap (matching Anthropic Claude rather than Qwen's `round(· / 32)` `smart_resize`) avoid exposing Qwen 3.5-VL's `32 px` step boundaries.
+
 ### Request billing constants
 
 ```math
@@ -222,6 +239,9 @@ uv run python scripts/run_live_probes.py
 export OPENROUTER_API_KEY=...
 export TYPESAFE_API_KEY=...   # optional; enables direct api.typesafe.ai parity checks
 uv run python scripts/run_image_and_parity_probes.py
+
+# 6. Regenerate the image latency and optical acuity figure from evidence/image_latency_and_acuity.json
+uv run python scripts/plot_image_latency_and_acuity.py
 ```
 
 ## Files
@@ -232,8 +252,11 @@ uv run python scripts/run_image_and_parity_probes.py
 - `scripts/run_image_and_parity_probes.py`: runs 22 image resolution/step probes, 8 dimension-bound probes, 10 variant/key probes, 9 constant probes, 20 `jev-1.13`/`jev-1.14` parity probes, and 21 OpenRouter vs. direct TypeSafe parity probes.
 - `scripts/benchmark_workloads.py`: benchmarks 12 open-source code files (raw and comment-stripped) and 16 Wikipedia `"Earth"` articles with live spotchecks.
 - `scripts/find_extremal_multipliers.py`: exhaustive 247,843-token extremal multiplier scanner with 22 live checks.
+- `scripts/plot_image_latency_and_acuity.py`: generates `evidence/image_latency_and_acuity.png` from `evidence/image_latency_and_acuity.json`.
 - `evidence/full_vocab_verification.json`: 199,998-token bitmap diff output.
 - `evidence/live_probes.json`: live text probe results.
 - `evidence/image_and_parity_probes.json`: live image, constant, version-parity, and endpoint-parity results.
+- `evidence/image_latency_and_acuity.json`: Jev 1.14 vs. Qwen3.5-35B-A3B image prefill latency, optical acuity, and 1-pixel stripe results.
+- `evidence/image_latency_and_acuity.png`: 3-panel plot comparing equivalent prose tokens, resolution scaling, and optical acuity.
 - `evidence/workload_benchmarks.json`: 28/28 public-corpus benchmark results.
 - `evidence/extremal_multipliers.json`: 22/22 extremal multiplier scan results.
