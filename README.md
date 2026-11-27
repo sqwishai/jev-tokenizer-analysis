@@ -12,6 +12,15 @@ Independent latency measurements by [Modaic](https://modaic.dev/blog/latency-doe
 
 Our reconstruction of `usage.input_tokens` matches `LabGuy94/jevtok`'s 600,000-call empirical bitmap of all 199,998 `o200k_base` tokens with **0 observable mismatches**, and matches live `jev-1.13` and `jev-1.14` responses identically on both direct `api.typesafe.ai` and OpenRouter.
 
+### What this means for users
+
+Billed token counts diverge sharply from Qwen 3.5's native counts (and count against Jev's 32,736 per-question context limit) depending on the workload:
+
+- **Non-Latin text (1.37x to 3.67x):** Real Wikipedia articles bill **3.67x** on Thai, **2.51x** on Russian, **2.13x** on Ukrainian, **1.98x** on Arabic, **1.83x** on Greek, **1.55x-1.58x** on Chinese and Japanese, **1.53x** on Hebrew, and **1.47x** on Hindi (while plain English stays at **1.02x**). Individual non-Latin tokens reach up to **15x**.
+- **CamelCase programming languages (1.21x to 1.42x on real code; up to 15x-24x on individual tokens):** Comment-stripped 30 KB production files bill **1.42x** on Objective-C (`IGListKit`), **1.38x** on Java/Spring, **1.37x** on Android Material and C#/.NET, **1.29x** on Android Jetpack Compose (Kotlin) and TypeScript (VSCode), **1.24x** on Swift and AndroidX, and **1.21x** on React/JS (+30% to +49% vs `o200k_base`). Individual SDK identifiers hit **11x-15x** and comment dividers hit **16x-24x**.
+- **Images (2.43x to 2.81x native visual tokens, plus key overhead):** Jev bills **2.43x-2.81x** more tokens per image than Qwen 3.5-VL's native `32x32` count (e.g. `6,274` vs `2,403` at `1568x1568`, roughly matching ViT+MoE prefill time at `1568x1568`), plus `+ T(asset_key)` for the reference string itself (**+32 to +35 extra tokens per image** when using UUID keys or OpenRouter's inline `image_url`).
+- **Fixed per-request overhead:** Every request carries a **259-token** base plus **7 tokens** per question (and additional option/legend framing for `choice` and `score`).
+
 In our view, the simplest explanation that fits both the latency evidence and the exact token-counting behavior is:
 
 1. **Text billing looks like a custom gateway counter designed to decouple billed counts from Qwen 3.5 (obscuring base-model fingerprinting), combined with an off-by-one bug in its fallback BPE filter.**
