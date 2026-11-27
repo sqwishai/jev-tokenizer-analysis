@@ -6,10 +6,14 @@ This repository documents the exact closed-form algorithms behind TypeSafe Jev's
 
 ## Executive Summary (Occam's Razor)
 
+**TypeSafe built this custom billing tokenizer in Jev's API gateway to obfuscate their underlying Qwen 3.5 base model from tokenizer fingerprinting — and shipped a classic off-by-one bug inside its fallback BPE filter that severely overbills non-Latin text and CamelCase code.**
+
+Independent latency evidence from [Modaic (*"Latency doesn't lie: Jev is (probably) Qwen3.5-35B-A3B!"*)](https://modaic.dev/blog/latency-doesnt-lie#qwens-tokenizer-predicts-jevs-latency-better-than-jevs-reported-counts) shows across 9,984 timed prompts that **Qwen 3.5's tokenizer predicts Jev's actual GPU latency better than TypeSafe's own reported `usage.input_tokens`**, alongside prefill throughput and self-identification evidence pointing to a Qwen 3.5 backbone that TypeSafe actively conceals. Our bit-exact reconstruction of `usage.input_tokens` explains *how* that obfuscation is implemented — and why it breaks billing so badly:
+
 Jev's billing counter runs in **TypeSafe's own first-party API gateway** (100% identical between direct `api.typesafe.ai` and OpenRouter, and 100% identical between `jev-1.13-20260917` and `jev-1.14-20261014` on all shared features). It is **not** any stock model tokenizer in the market:
 
-1. **Text billing: a deliberate `Qwen 3.5` + `o200k_base` hybrid with two stacked bugs in fallback BPE.**
-   - **Deliberate layer:** combines Qwen 3.5–3.8's `NFC` normalizer, regex pre-tokenizer, and reachable byte-token set `Q = bytes_256 ∪ {a + b : (a, b) ∈ qwen35_merges}` (`247,843` tokens, excluding the 201 merge-less entries in Qwen 3.5's `vocab`) with OpenAI `o200k_base`'s `199,998` merge ranks `O`.
+1. **Text billing: a deliberate Qwen 3.5 + `o200k_base` obfuscation hybrid with two stacked bugs in fallback BPE.**
+   - **Why they built it (base-model obfuscation):** Exposing Qwen 3.5's raw token counts immediately fingerprints the base model via `usage.input_tokens`. Replacing it with plain `o200k_base` would diverge 2–3× on numbers/IDs (`\p{N}{1,3}` vs. Qwen's single-digit `\p{N}`) and skip `NFC` normalization, breaking alignment with the gateway's 32,736-token context cap. So TypeSafe built a hybrid counter combining Qwen 3.5–3.8's `NFC` normalizer, regex pre-tokenizer, and reachable byte-token set `Q = bytes_256 ∪ {a + b : (a, b) ∈ qwen35_merges}` (`247,843` tokens, excluding the 201 merge-less entries in Qwen 3.5's `vocab`) with OpenAI `o200k_base`'s `199,998` merge ranks `O`. It worked well enough as camouflage to fool early launch-week reverse-engineering writeups into thinking Jev used a custom or "vocabulary-spliced" model.
    - **Pass 1 (whole-pretoken fast path, `tiktoken`-style):** if `piece in O and piece in Q`, emit 1 token.
    - **Pass 2 (fallback BPE, `o200k_base` rank order):** contains two stacked bugs in three lines of code — checking **all contiguous byte substrings** instead of BPE merge parents, plus a classic **off-by-one (`j < len(cand)` instead of `j <= len(cand)`)**:
 
@@ -27,11 +31,11 @@ def allowed_merge(cand: bytes) -> bool:
    That single missing `+ 1` / `=` simultaneously explains:
    - Why the final byte is ignored (`j` stops at `len(cand) - 1`).
    - Why **10,551 non-Qwen `o200k_base` tokens** (`abab`, `crip`, `onday`, `oq`, `):\n`, etc.) leak into `FORMED` even though Pass 1 rejects non-Qwen chunks like `oworld`.
-   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase code without comments (+21% to +42% vs. Qwen 3.5; +30% to +49% vs. `o200k`)**, while leaving **English Wikipedia at +1.6%**.
+   - Why **91,846 shared `o200k ∩ Qwen 3.5` tokens** are blocked inside longer pre-tokens, punishing **non-Latin Wikipedia articles (+47% to +267%)** and **real CamelCase code without comments (+21% to +42% vs. Qwen 3.5; +30% to +49% vs. `o200k`)**, while leaving **English Wikipedia at +1.6%** (which explains why English-centric QA never caught the bug).
 
 2. **Image billing: `28×28` `ceil` patches × `2×` (~2.4–2.8× Qwen 3.5-VL native) + a hidden `+ T(asset_key)` bug.**
    - Exact formula: `2 + T(asset_key) + 2 * ceil(width / 28) * ceil(height / 28)` with hard dimension bounds `280 <= width, height <= 1568 px` (`10×28` to `56×28`, HTTP 400 outside).
-   - Qwen 3.5-VL natively uses `32×32` patches (`patch_size=16, merge_size=2`) at `1×`, so Jev bills **2.43× to 2.81× more visual tokens** than Qwen 3.5-VL's sequence length (`1024×1024`: `2,740` billed vs `1,026` Qwen 3.5-VL; `1568×1568`: `6,274` billed vs `2,403` Qwen 3.5-VL).
+   - Qwen 3.5-VL natively uses `32×32` patches (`patch_size=16, merge_size=2`) at `1×`; billing on a `28×28` grid × `2×` both hides Qwen 3.5-VL's `32`-pixel patch signature and charges **2.43× to 2.81× more visual tokens** than Qwen 3.5-VL's sequence length (`1024×1024`: `2,740` billed vs `1,026` Qwen 3.5-VL; `1568×1568`: `6,274` billed vs `2,403` Qwen 3.5-VL).
    - **The asset reference key string itself is still billed as text tokens (`+ T(asset_key)`)** even though it is replaced by the image — turning TypeSafe's recommended UUID keys (and OpenRouter's inline `image_url` auto-UUIDs) into a silent **+32 to +35 extra billed tokens per image**.
 
 ---
