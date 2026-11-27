@@ -4,8 +4,8 @@ TypeSafe Jev bills substantially more input tokens than Qwen 3.5 processes on no
 
 | Workload | Average vs. Qwen 3.5 | Peak | Notes |
 |---|---:|---:|---|
-| **Non-Latin text** (10 Wikipedia scripts) | **1.96x (+96%)** | **3.67x** (Thai) | Individual non-Latin tokens reach 15x |
-| **CamelCase code** (12 repos, no comments) | **1.31x (+31%)** | **1.42x** (Objective-C) | Averages +39% vs. `o200k`; dividers hit 24x |
+| **Non-Latin text** (10 Wikipedia scripts) | **1.96x (+96%)** | **3.67x** (Thai) | Russian 2.51x, Ukrainian 2.13x, Arabic 1.98x |
+| **CamelCase code** (12 repos, no comments) | **1.31x (+31%)** | **1.42x** (Objective-C) | Averages +39% vs. `o200k` across mobile, web, and backend repos |
 | **Images** (4 standard resolutions) | **2.63x (+163%)** | **2.81x** (512x512) | Plus 32 to 35 extra tokens for UUID keys; matches ViT+MoE prefill time at 1568x1568 |
 | **Plain English** (Wikipedia) | **1.02x (+2%)** | 1.02x | Close enough to go unnoticed in English testing |
 | **Per-request framing** | +259 base | +7 / question | Added before any text or image tokens |
@@ -94,31 +94,6 @@ Qwen's regex keeps CamelCase identifiers as single pre-tokens, so multi-word sym
 | **AndroidX** (`RecyclerView.java`) | 1.11x | 6,114 | 5,729 | **7,606** | **1.24x (+24.4%)** | **+32.8%** | exact |
 | **Swift / iOS** (`Alamofire` `Session.swift`) | 1.15x | 5,053 | 4,605 | **6,253** | **1.24x (+23.7%)** | **+35.8%** | exact |
 | **React / JS** (`facebook/react` `ReactFiberWorkLoop.js`) | 1.20x | 7,947 | 6,959 | **9,596** | **1.21x (+20.7%)** | **+37.9%** | exact |
-
-## Extremal Token Multipliers
-
-An exhaustive scan of all 247,843 reachable Qwen 3.5 tokens and all 53,851 `FORMED` tokens (`scripts/find_extremal_multipliers.py`, 22 curated cases live-verified in `evidence/extremal_multipliers.json`) shows a maximum ratio of **24.0x** higher than Qwen 3.5 (16x-17x scalable at arbitrary length) versus a lower bound of **0.50x**:
-
-| Category | Exact string | Qwen 3.5 | `o200k` | Jev (live) | **Jev / Qwen 3.5** | **Jev / `o200k`** |
-|---|---|---:|---:|---:|---:|---:|
-| Global single-token max | `'/' * 96` (C/Java divider) | 1 | 2 | **24** | **24.0x** | 12.0x |
-| Scalable plain-text max | `(' ' + '/' * 70) * 10` | 10 | 20 | **170** | **17.0x** | 8.5x |
-| Scalable 16x vs. both | `'\u2014' * 160` / `'~' * 320` / `'_' * 640` / `'/' * 960` | 10-15 | 10-15 | **160-240** | **16.0x** | **16.0x** |
-| Scalable 16x vs. Qwen | `'%' * 640` | 10 | 20 | **160** | **16.0x** | 8.0x |
-| C# / .NET token | `.DataGridViewColumnHeadersHeightSizeMode` | 1 | 8 | **15** | **15.0x** | 1.9x |
-| Thai ("more info") | `ข้อมูลเพิ่มเติม` | 1 | 2 | **15** | **15.0x** | **7.5x** |
-| Thai ("privacy") | `ความเป็นส่วนตัว` | 1 | 4 | **15** | **15.0x** | 3.8x |
-| Chinese footer | `转载请附上原文出处链接和本声明` | 1 | 10 | **15** | **15.0x** | 1.5x |
-| Russian ("financing") | ` финансирования` | 1 | 2 | **14** | **14.0x** | **7.0x** |
-| Russian ("economic") | ` экономического` | 1 | 2 | **14** | **14.0x** | **7.0x** |
-| C block comment header | `'/' + '*' * 96` | 1 | 2 | **13** | **13.0x** | 6.5x |
-| Objective-C / iOS token | ` dequeueReusableCellWithIdentifier` | 1 | 5 | **12** | **12.0x** | 2.4x |
-| Arabic ("strategic") | ` الاستراتيجية` | 1 | 2 | **12** | **12.0x** | **6.0x** |
-| Objective-C / iOS token | `.translatesAutoresizingMaskIntoConstraints` | 1 | 5 | **11** | **11.0x** | 2.2x |
-| Android / Java token | `NavigationItemSelectedListener` | 1 | 4 | **11** | **11.0x** | 2.8x |
-| Java / Android token | ` UnsupportedOperationException` | 1 | 3 | **10** | **10.0x** | 3.3x |
-| JS / Jest token | `toHaveBeenCalledWith` | 1 | 5 | **9** | **9.0x** | 1.8x |
-| Global lower bound | `'ab' * 100` / `'-' * 15 + '\n'` | 100 / 2 | 50 / 1 | **50 / 1** | **0.50x** | 1.0x |
 
 ## Image Tokenization and Request Constants
 
@@ -216,20 +191,16 @@ uv run python scripts/verify_full_vocab.py
 #    (set OPENROUTER_API_KEY to live spotcheck all 28)
 uv run python scripts/benchmark_workloads.py
 
-# 3. Scan all 247,843 Qwen 3.5 tokens for extremal multipliers
-#    (set OPENROUTER_API_KEY to live-verify 22 extremes)
-uv run python scripts/find_extremal_multipliers.py
-
-# 4. Run all 82 live discriminating text probes (~$0.001 total)
+# 3. Run all 82 live discriminating text probes (~$0.001 total)
 export OPENROUTER_API_KEY=...
 uv run python scripts/run_live_probes.py
 
-# 5. Run image tokenization, billing constants, jev-1.13/1.14 & direct TypeSafe parity probes
+# 4. Run image tokenization, billing constants, jev-1.13/1.14 & direct TypeSafe parity probes
 export OPENROUTER_API_KEY=...
 export TYPESAFE_API_KEY=...   # optional; enables direct api.typesafe.ai parity checks
 uv run python scripts/run_image_and_parity_probes.py
 
-# 6. Regenerate the image latency and optical acuity figure
+# 5. Regenerate the image latency and optical acuity figure
 uv run python scripts/plot_image_latency_and_acuity.py
 ```
 
@@ -240,6 +211,5 @@ uv run python scripts/plot_image_latency_and_acuity.py
 - `scripts/run_live_probes.py`: live text, `output_tokens`, and version parity probes.
 - `scripts/run_image_and_parity_probes.py`: live image, billing-constant, version-parity, and endpoint-parity probes.
 - `scripts/benchmark_workloads.py`: 12 open-source code files (raw and comment-stripped) and 16 Wikipedia articles with live spotchecks.
-- `scripts/find_extremal_multipliers.py`: exhaustive 247,843-token extremal multiplier scan with 22 live checks.
 - `scripts/plot_image_latency_and_acuity.py`: generates `evidence/image_latency_and_acuity.png` from `evidence/image_latency_and_acuity.json`.
 - `evidence/`: JSON outputs and plot for every check above.
